@@ -3,11 +3,20 @@ from typing import Dict
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from django.contrib.auth.models import User
 from django.test import LiveServerTestCase
 
 
 class TestArticles(LiveServerTestCase):
-    fixtures = ["admin_user.json"]
+    @classmethod
+    def setUpClass(cls):
+        super(TestArticles, cls).setUpClass()
+        cls.admin = {
+            "username": "admin",
+            "email": "admin@admin.com",
+            "password": "adm1n"
+        }
+        User.objects.create_superuser(**cls.admin)
 
     def setUp(self) -> None:
         chrome_options = Options()
@@ -37,11 +46,11 @@ class TestArticles(LiveServerTestCase):
         self.browser.get(self.live_server_url + '/admin/')
 
         username_input = self.browser.find_element(By.ID,'id_username')
-        username_input.send_keys('admin')
+        username_input.send_keys(self.admin["username"])
         password_input = self.browser.find_element(By.ID,'id_password')
-        password_input.send_keys('adm1n')
+        password_input.send_keys(self.admin["password"])
 
-        self.browser.find_element(By.XPATH, '//input[@value="Log in').click()
+        self.browser.find_element(By.XPATH, '//input[@value="Log in"]').click()
         self.assertIn('Site administration', self.browser.title)
 
     def when_click_link(self, link_text: str):
