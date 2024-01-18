@@ -37,8 +37,8 @@ class TestArticles(LiveServerTestCase):
         """
         self.given_an_admin_page()
         self.when_click_link('Articles')
-        self.then_i_am_on_the_admin_page('Articles')
-        self.then_i_will_click_on_add_button('Articles')
+        self.then_i_am_on_the_admin_page('Article')
+        self.then_i_will_click_on_add_button('Article')
         self.then_i_will_add_new_article(self.data)
     
     def given_an_admin_page(self):
@@ -67,7 +67,8 @@ class TestArticles(LiveServerTestCase):
         Args:
             page_name (str): Admin's page name.
         """
-        expected_name = f"Select {page_name} to change | Django site admin"
+        name = page_name.lower()
+        expected_name = f"Select {name} to change | Django site admin"
         self.assertEquals(expected_name, self.browser.title)
     
     def then_i_will_click_on_add_button(self, button_name: str):
@@ -79,9 +80,9 @@ class TestArticles(LiveServerTestCase):
         name = button_name.lower()
 
         self.browser.refresh()
-        self.browser.find_element(By.XPATH, f"//a[@href='/admin/articles/{name}/add/']").click()
+        self.browser.find_element(By.XPATH, f"//a[@href='/admin/blog/{name}/add/']").click()
         
-        self.assertEquals("Add Article | Django site admin", self.browser.title)
+        self.assertEquals("Add article | Django site admin", self.browser.title)
     
     def then_i_will_add_new_article(self, new_article: Dict[str, str]):
         """Fill add article form, submits and checks if was created.
@@ -96,4 +97,4 @@ class TestArticles(LiveServerTestCase):
         content_field.send_keys(new_article["content"])
         self.browser.find_element(By.NAME, "_save").click()
 
-        self.then_i_am_on_the_admin_page('Article')
+        self.then_i_am_on_the_admin_page('article')
