@@ -12,4 +12,9 @@ unit:
 
 test-all:
 	python manage.py test
-	
+
+make-migrations:
+	python manage.py makemigrations
+
+apply-migrations:
+	python manage.py migrate
