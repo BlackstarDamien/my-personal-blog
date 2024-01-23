@@ -1,6 +1,7 @@
 from typing import Dict, Tuple
 
 from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from django.contrib.auth.models import User
@@ -56,6 +57,7 @@ class TestArticles(LiveServerTestCase):
         self.when_click_link(existing_article)
         self.then_i_am_on_the_edit_article_page(existing_article)
         self.then_i_will_remove_existing_article(id)
+        self.then_article_is_not_present(existing_article)
 
     def create_dummy_article(self) -> Tuple[int, str]:
         """Create dummy article and returns Article's title.
@@ -167,3 +169,12 @@ class TestArticles(LiveServerTestCase):
         self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
 
         self.then_i_am_on_the_admin_page('article')
+    
+    def then_article_is_not_present(self, title: str):
+        """Checks if article exists in admin page.
+
+        Args:
+            title (str): Title of article to check.
+        """
+        with self.assertRaises(NoSuchElementException):
+            self.browser.find_element(By.LINK_TEXT, title)
