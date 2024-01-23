@@ -7,8 +7,6 @@ from django.contrib.auth.models import User
 from django.test import LiveServerTestCase
 from blog.models import Article
 
-from unittest import skip
-
 
 class TestArticles(LiveServerTestCase):
     def setUp(self) -> None:
