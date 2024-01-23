@@ -113,3 +113,6 @@ venv/
 ENV/
 env.bak/
 .env.bak/
+
+# generated static files
+/static
