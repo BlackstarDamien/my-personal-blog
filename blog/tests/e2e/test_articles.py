@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Tuple
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -6,6 +6,8 @@ from selenium.webdriver.chrome.options import Options
 from django.contrib.auth.models import User
 from django.test import LiveServerTestCase
 from blog.models import Article
+
+from unittest import skip
 
 
 class TestArticles(LiveServerTestCase):
@@ -27,7 +29,7 @@ class TestArticles(LiveServerTestCase):
 
     def tearDown(self) -> None:
         self.browser.close()
-
+    
     def test_create_article(self):
         """Tests that it's possible to add an article via admin panel.
         """
@@ -40,21 +42,32 @@ class TestArticles(LiveServerTestCase):
     def test_edit_article(self):
         """Tests that it's possible to edit existing article via admin panel.
         """
-        existing_article = self.create_dummy_article()
+        _, existing_article = self.create_dummy_article()
         self.given_an_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(existing_article)
         self.then_i_am_on_the_edit_article_page(existing_article)
         self.then_i_will_edit_existing_article(self.edit_data)
+    
+    def test_delete_article(self):
+        """Test that it's possible to remove existing article via admin panel.
+        """
+        id, existing_article = self.create_dummy_article()
+        self.given_an_admin_page()
+        self.when_click_link('Articles')
+        self.when_click_link(existing_article)
+        self.then_i_am_on_the_edit_article_page(existing_article)
+        self.then_i_will_remove_existing_article(id)
 
-    def create_dummy_article(self) -> str:
+    def create_dummy_article(self) -> Tuple[int, str]:
         """Create dummy article and returns Article's title.
 
         Returns:
-            str: Title of created article.
+            Tuple[int, str]: Id and title of created article.
         """
         Article.objects.create(**self.data)
-        return self.data["title"]
+        article = Article.objects.get(title=self.data["title"])
+        return article.id, article.title
 
     def create_dummy_admin_user(self):
         """Create Admin user for testing purpose.
@@ -145,5 +158,14 @@ class TestArticles(LiveServerTestCase):
             field_to_change.send_keys(changes[k])
         
         self.browser.find_element(By.NAME, "_save").click()
+
+        self.then_i_am_on_the_admin_page('article')
+
+    def then_i_will_remove_existing_article(self, id: int):
+        """Removes existing article.
+        """
+        delete_link = f"//a[@href='/admin/blog/article/{id}/delete/']"
+        self.browser.find_element(By.XPATH, delete_link).click()
+        self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
 
         self.then_i_am_on_the_admin_page('article')
