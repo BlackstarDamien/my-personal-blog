@@ -5,20 +5,13 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from django.contrib.auth.models import User
 from django.test import LiveServerTestCase
+from blog.models import Article
 
 
 class TestArticles(LiveServerTestCase):
-    @classmethod
-    def setUpClass(cls):
-        super(TestArticles, cls).setUpClass()
-        cls.admin = {
-            "username": "admin",
-            "email": "admin@admin.com",
-            "password": "adm1n"
-        }
-        User.objects.create_superuser(**cls.admin)
-
     def setUp(self) -> None:
+        self.create_dummy_admin_user()
+
         chrome_options = Options()
         chrome_options.add_argument("--headless")
         self.browser = webdriver.Chrome(options=chrome_options)
@@ -27,6 +20,9 @@ class TestArticles(LiveServerTestCase):
         self.data = {
             "title": "Test Article",
             "content": "Test Content"
+        }
+        self.edit_data = {
+            "content": "Edited Content"
         }
 
     def tearDown(self) -> None:
@@ -41,6 +37,35 @@ class TestArticles(LiveServerTestCase):
         self.then_i_will_click_on_add_button('Article')
         self.then_i_will_add_new_article(self.data)
     
+    def test_edit_article(self):
+        """Tests that it's possible to edit existing article via admin panel.
+        """
+        existing_article = self.create_dummy_article()
+        self.given_an_admin_page()
+        self.when_click_link('Articles')
+        self.when_click_link(existing_article)
+        self.then_i_am_on_the_edit_article_page(existing_article)
+        self.then_i_will_edit_existing_article(self.edit_data)
+
+    def create_dummy_article(self) -> str:
+        """Create dummy article and returns Article's title.
+
+        Returns:
+            str: Title of created article.
+        """
+        Article.objects.create(**self.data)
+        return self.data["title"]
+
+    def create_dummy_admin_user(self):
+        """Create Admin user for testing purpose.
+        """
+        self.admin = {
+            "username": "admin",
+            "email": "admin@admin.com",
+            "password": "adm1n"
+        }
+        User.objects.create_superuser(**self.admin)
+
     def given_an_admin_page(self):
         """Goes and logs into admin page."""
         self.browser.get(self.live_server_url + '/admin/')
@@ -70,6 +95,15 @@ class TestArticles(LiveServerTestCase):
         name = page_name.lower()
         expected_name = f"Select {name} to change | Django site admin"
         self.assertEquals(expected_name, self.browser.title)
+
+    def then_i_am_on_the_edit_article_page(self, title: str):
+        """Check if user is on given article's edit page.
+
+        Args:
+            title (str): Article's title.
+        """
+        expected_name = f"{title} | Change article | Django site admin"
+        self.assertEquals(expected_name, self.browser.title)
     
     def then_i_will_click_on_add_button(self, button_name: str):
         """Clicks on given add button and redirect to create form.
@@ -95,6 +129,21 @@ class TestArticles(LiveServerTestCase):
 
         title_field.send_keys(new_article["title"])
         content_field.send_keys(new_article["content"])
+        self.browser.find_element(By.NAME, "_save").click()
+
+        self.then_i_am_on_the_admin_page('article')
+
+    def then_i_will_edit_existing_article(self, changes: Dict[str, str]):
+        """Edit properties of existing article.
+
+        Args:
+            changes (Dict[str, str]): Fields to change with new values.
+        """
+        for k in changes:
+            field_to_change = self.browser.find_element(By.NAME, k)
+            field_to_change.clear()
+            field_to_change.send_keys(changes[k])
+        
         self.browser.find_element(By.NAME, "_save").click()
 
         self.then_i_am_on_the_admin_page('article')
