@@ -1,6 +1,9 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from blog.models import Article
 
 
 def main_page(request: HttpRequest) -> HttpResponse:
-    return render(request, 'index.html')
+    articles = Article.objects.all()
+    context = {"articles": articles}
+    return render(request, 'index.html', context)

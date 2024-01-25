@@ -6,6 +6,10 @@
     <title>My Personal Blog</title>
 </head>
 <body>
-    
+    <ul>
+        {% for article in articles %}
+            <li><a href="/" name="article_link">{{ article.title }}</a></li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
