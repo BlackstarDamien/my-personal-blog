@@ -39,7 +39,7 @@ class TestMainPage(LiveServerTestCase):
     def then_i_see_list_of_articles(self):
         """Checks if there are any articles displayed on main page.
         """
-        articles = self.browser.find_elements(By.NAME, "article_link")
+        articles = self.browser.find_elements(By.CSS_SELECTOR, ".article-link")
         self.assertTrue(len(articles) > 0)
     
     def create_dummy_articles(self):
