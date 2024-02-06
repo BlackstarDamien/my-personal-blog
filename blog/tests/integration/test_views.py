@@ -13,7 +13,7 @@ class TestMainPageView(TestCase):
         request = HttpRequest()
         reponse = main_page(request)
         expected_html = render_to_string('index.html')
-        self.assertEquals(reponse.content.decode(), expected_html)
+        self.assertEqual(reponse.content.decode(), expected_html)
     
     def test_main_page_rendered_with_data(self):
         """Tests that main page is rendered with data properly.

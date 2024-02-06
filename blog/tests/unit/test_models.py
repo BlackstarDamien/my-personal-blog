@@ -10,8 +10,8 @@ class TestArticle(TestCase):
         }
         Article.objects.create(**data)
         article = Article.objects.get(title=data["title"])
-        self.assertEquals(article.title, data["title"])
-        self.assertEquals(article.content, data["content"])
+        self.assertEqual(article.title, data["title"])
+        self.assertEqual(article.content, data["content"])
     
     def test_should_be_represented_by_title(self):
         data = {
@@ -19,4 +19,4 @@ class TestArticle(TestCase):
             "content": "Test Content"
         }
         article = Article(**data)
-        self.assertEquals(data["title"], str(article))
+        self.assertEqual(data["title"], str(article))

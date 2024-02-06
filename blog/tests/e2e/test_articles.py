@@ -107,7 +107,7 @@ class TestArticles(LiveServerTestCase):
         """
         name = page_name.lower()
         expected_name = f"Select {name} to change | Django site admin"
-        self.assertEquals(expected_name, self.browser.title)
+        self.assertEqual(expected_name, self.browser.title)
 
     def then_i_am_on_the_edit_article_page(self, title: str):
         """Check if user is on given article's edit page.
@@ -116,7 +116,7 @@ class TestArticles(LiveServerTestCase):
             title (str): Article's title.
         """
         expected_name = f"{title} | Change article | Django site admin"
-        self.assertEquals(expected_name, self.browser.title)
+        self.assertEqual(expected_name, self.browser.title)
     
     def then_i_will_click_on_add_button(self, button_name: str):
         """Clicks on given add button and redirect to create form.
@@ -129,7 +129,7 @@ class TestArticles(LiveServerTestCase):
         self.browser.refresh()
         self.browser.find_element(By.XPATH, f"//a[@href='/admin/blog/{name}/add/']").click()
         
-        self.assertEquals("Add article | Django site admin", self.browser.title)
+        self.assertEqual("Add article | Django site admin", self.browser.title)
     
     def then_i_will_add_new_article(self, new_article: Dict[str, str]):
         """Fill add article form, submits and checks if was created.

@@ -34,7 +34,7 @@ class TestMainPage(LiveServerTestCase):
         Args:
             page_name (str): Blog's name.
         """
-        self.assertEquals(page_name, self.browser.title)
+        self.assertEqual(page_name, self.browser.title)
     
     def then_i_see_list_of_articles(self):
         """Checks if there are any articles displayed on main page.
