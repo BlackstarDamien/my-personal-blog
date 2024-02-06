@@ -18,3 +18,6 @@ make-migrations:
 
 apply-migrations:
 	python manage.py migrate
+
+generate-static:
+	python manage.py collectstatic
