@@ -59,5 +59,5 @@ class TestArticlePage(LiveServerTestCase):
             "content": content
         }
 
-        self.assertTrue(f"{self.live_server_url}/{slugify(title)}", self.browser.current_url)
+        self.assertEqual(f"{self.live_server_url}/{slugify(title)}", self.browser.current_url)
         self.assertDictEqual(self.article, current_article)
