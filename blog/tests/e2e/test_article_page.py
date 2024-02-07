@@ -51,7 +51,7 @@ class TestArticlePage(LiveServerTestCase):
     def then_i_can_see_article_page(self, page_name: str):
         """Checks if article is displayed properly.
         """
-        expected_url = f"{self.live_server_url}/{slugify(page_name)}"
+        expected_url = f"{self.live_server_url}/articles/{slugify(page_name)}"
         self.assertEqual(expected_url, self.browser.current_url)
 
         title = self.browser.find_elements(By.CSS_SELECTOR, ".article-title")
