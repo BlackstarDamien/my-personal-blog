@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.urls import reverse
 
 
 class Article(models.Model):
@@ -14,6 +15,9 @@ class Article(models.Model):
             str: String representation of Article.
         """
         return self.title
+
+    def get_absolute_url(self):
+        return reverse("article_page", kwargs={"slug": self.slug})
 
     def save(self, *args, **kwargs):
         if not self.slug or self.slug == '':
