@@ -29,4 +29,12 @@ class TestArticle(TestCase):
         Article.objects.create(**data)
         article = Article.objects.get(title=data["title"])
         self.assertEqual(article.slug, "test-article")
-        
+    
+    def test_should_calculate_url_for_given_object(self):
+        data = {
+            "title": "Test Article",
+            "content": "Test Content"
+        }
+        Article.objects.create(**data)
+        article = Article.objects.get(title=data["title"])
+        self.assertEqual(f"/articles/{article.slug}", article.get_absolute_url())
