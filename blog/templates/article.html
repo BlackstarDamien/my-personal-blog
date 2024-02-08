@@ -14,7 +14,17 @@
         </div>
     </div>
     <div class="blog-content">
-        
+        <header class="article-header">
+            <h1 class="article-title">
+                {{ article.title }}
+            </h1>
+            <h3 class="article-pub-date">
+                {{ article.pub_date }}
+            </h3>
+        </header>
+        <article class="article-content">
+            {{ article.content }}
+        </article>
     </div>
 </body>
 </html>
