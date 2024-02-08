@@ -25,7 +25,6 @@ class TestMainPageView(TestCase):
             all(article in reponse.content.decode() 
                 for article in expected_articles))
 
-    
     def create_dummy_articles(self) -> List[str]:
         """Creates dummy articles.
 
