@@ -8,5 +8,5 @@ def main_page(request: HttpRequest) -> HttpResponse:
     context = {"articles": articles}
     return render(request, 'index.html', context)
 
-def article_page(request: HttpRequest) -> HttpResponse:
+def article_page(request: HttpRequest, slug: str) -> HttpResponse:
     return render(request, 'article.html')
