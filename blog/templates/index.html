@@ -17,7 +17,12 @@
         <ul class="articles-list">
             {% for article in articles %}
                 <li class="article-title">
-                    <a href="/" class="article-link">{{ article.title }}</a>
+                    <a 
+                        href="{{ article.get_absolute_url }}" 
+                        class="article-link"
+                    >
+                        {{ article.title }}
+                    </a>
                 </li>
             {% endfor %}
         </ul>
