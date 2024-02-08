@@ -54,14 +54,14 @@ class TestArticlePage(LiveServerTestCase):
         expected_url = f"{self.live_server_url}/articles/{slugify(page_name)}"
         self.assertEqual(expected_url, self.browser.current_url)
 
-        title = self.browser.find_elements(By.CSS_SELECTOR, ".article-title")
-        publish_date = title = self.browser.find_elements(By.CSS_SELECTOR, ".article-pub-date")
-        content = self.browser.find_elements(By.CSS_SELECTOR, ".article-content")
+        title = self.browser.find_element(By.CSS_SELECTOR, ".article-title")
+        publish_date = self.browser.find_element(By.CSS_SELECTOR, ".article-pub-date")
+        content = self.browser.find_element(By.CSS_SELECTOR, ".article-content")
         
         current_article = {
-            "title": title,
-            "publish_date": publish_date,
-            "content": content
+            "title": title.text,
+            "publish_date": publish_date.text,
+            "content": content.text
         }
         expected_article = {
             "title": self.article["title"],
