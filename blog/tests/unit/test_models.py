@@ -20,3 +20,13 @@ class TestArticle(TestCase):
         }
         article = Article(**data)
         self.assertEqual(data["title"], str(article))
+
+    def test_should_generate_slug_when_object_is_saved(self):
+        data = {
+            "title": "Test Article",
+            "content": "Test Content"
+        }
+        Article.objects.create(**data)
+        article = Article.objects.get(title=data["title"])
+        self.assertEqual(article.slug, "test-article")
+        
