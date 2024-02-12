@@ -19,7 +19,7 @@
                 {{ article.title }}
             </h1>
             <h3 class="article-pub-date">
-                {{ article.pub_date }}
+                {{ article.publish_date|date:"Y-m-j" }}
             </h3>
         </header>
         <article class="article-content">
