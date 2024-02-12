@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.template.defaultfilters import slugify
 from django.urls import reverse
 
@@ -6,6 +7,7 @@ from django.urls import reverse
 class Article(models.Model):
     title = models.CharField(max_length=120)
     content = models.TextField()
+    publish_date = models.DateField(auto_now_add=True)
     slug = models.SlugField(null=False)
 
     def __str__(self) -> str:
@@ -21,5 +23,5 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug or self.slug == '':
-            self.slug = slugify(self.title)
+            self.slug = slugify(self.title)    
         return super().save(*args, **kwargs)
