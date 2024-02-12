@@ -7,3 +7,8 @@ def main_page(request: HttpRequest) -> HttpResponse:
     articles = Article.objects.all()
     context = {"articles": articles}
     return render(request, 'index.html', context)
+
+def article_page(request: HttpRequest, slug: str) -> HttpResponse:
+    article = Article.objects.get(slug=slug)
+    context = {"article": article}
+    return render(request, 'article.html', context)

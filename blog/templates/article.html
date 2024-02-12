@@ -14,18 +14,17 @@
         </div>
     </div>
     <div class="blog-content">
-        <ul class="articles-list">
-            {% for article in articles %}
-                <li class="article-title">
-                    <a 
-                        href="{{ article.get_absolute_url }}" 
-                        class="article-link"
-                    >
-                        {{ article.title }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
+        <header class="article-header">
+            <h1 class="article-title">
+                {{ article.title }}
+            </h1>
+            <h3 class="article-pub-date">
+                {{ article.publish_date|date:"Y-m-j" }}
+            </h3>
+        </header>
+        <article class="article-content">
+            {{ article.content }}
+        </article>
     </div>
 </body>
 </html>
