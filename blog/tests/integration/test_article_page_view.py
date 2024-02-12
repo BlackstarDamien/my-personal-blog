@@ -1,8 +1,4 @@
-from typing import List
 from django.test import TestCase
-from django.http import HttpRequest
-from django.template.loader import render_to_string
-from blog.views import article_page
 from blog.models import Article
 
 
