@@ -16,10 +16,8 @@ class TestArticlePageView(TestCase):
     def test_article_page_returns_correct_html(self):
         """Test that main page returns proper html file.
         """
-        request = HttpRequest()
-        reponse = article_page(request, self.article.slug)
-        expected_html = render_to_string('article.html')
-        self.assertEqual(reponse.content.decode(), expected_html)
+        response = self.client.get(self.article.get_absolute_url())
+        self.assertTemplateUsed(response, 'article.html')
 
     def test_articles_page_receives_proper_context_data(self):
         """Tests that article page returns proper data in context.
