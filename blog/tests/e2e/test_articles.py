@@ -1,33 +1,19 @@
 from typing import Dict, Tuple
 
-from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
 from django.contrib.auth.models import User
-from django.test import LiveServerTestCase
 from blog.models import Article
+from blog.tests.e2e.base import TestBase
 
 
-class TestArticles(LiveServerTestCase):
+class TestArticles(TestBase):
     def setUp(self) -> None:
+        super().setUp()
         self.create_dummy_admin_user()
-
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        self.browser = webdriver.Chrome(options=chrome_options)
-        self.browser.implicitly_wait(3)
-
-        self.data = {
-            "title": "Test Article",
-            "content": "Test Content"
-        }
         self.edit_data = {
             "content": "Edited Content"
         }
-
-    def tearDown(self) -> None:
-        self.browser.close()
     
     def test_create_article(self):
         """Tests that it's possible to add an article via admin panel.
@@ -36,7 +22,7 @@ class TestArticles(LiveServerTestCase):
         self.when_click_link('Articles')
         self.then_i_am_on_the_admin_page('Article')
         self.then_i_will_click_on_add_button('Article')
-        self.then_i_will_add_new_article(self.data)
+        self.then_i_will_add_new_article(self.article)
     
     def test_edit_article(self):
         """Tests that it's possible to edit existing article via admin panel.
@@ -65,8 +51,8 @@ class TestArticles(LiveServerTestCase):
         Returns:
             Tuple[int, str]: Id and title of created article.
         """
-        Article.objects.create(**self.data)
-        article = Article.objects.get(title=self.data["title"])
+        Article.objects.create(**self.article)
+        article = Article.objects.get(title=self.article["title"])
         return article.id, article.title
 
     def create_dummy_admin_user(self):
@@ -90,15 +76,7 @@ class TestArticles(LiveServerTestCase):
 
         self.browser.find_element(By.XPATH, '//input[@value="Log in"]').click()
         self.assertIn('Site administration', self.browser.title)
-
-    def when_click_link(self, link_text: str):
-        """Clicks on given link name.
-
-        Args:
-            link_text (str): Name of link to click.
-        """
-        self.browser.find_element(By.LINK_TEXT, link_text).click()
-    
+   
     def then_i_am_on_the_admin_page(self, page_name: str):
         """Check if user is on given admin page.
 

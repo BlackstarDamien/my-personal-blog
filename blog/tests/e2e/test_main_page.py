@@ -1,20 +1,9 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from django.test import LiveServerTestCase
 from blog.models import Article
+from blog.tests.e2e.base import TestBase
 
 
-class TestMainPage(LiveServerTestCase):
-    def setUp(self) -> None:
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        self.browser = webdriver.Chrome(options=chrome_options)
-        self.browser.implicitly_wait(3)
-
-    def tearDown(self) -> None:
-        self.browser.close()
-    
+class TestMainPage(TestBase):
     def test_displays_list_of_articles(self):
         """Tests that main page displays list of existing articles.
         """
@@ -22,11 +11,6 @@ class TestMainPage(LiveServerTestCase):
         self.given_a_main_page()
         self.when_vist_this_page("My Personal Blog")
         self.then_i_see_list_of_articles()
-    
-    def given_a_main_page(self):
-        """Goes to blog main page.
-        """
-        self.browser.get(self.live_server_url)
     
     def when_vist_this_page(self, page_name: str):
         """Checks if user is on main page
