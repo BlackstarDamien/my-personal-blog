@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.test import TestCase
+from django.db.utils import IntegrityError
 from blog.models import Article
 
 
@@ -21,6 +22,11 @@ class TestArticle(TestCase):
 
     def test_should_generate_slug_when_object_is_saved(self):
         self.assertEqual(self.article.slug, "test-article")
+    
+    def test_throws_error_when_slug_not_unique(self):
+        with self.assertRaises(IntegrityError):
+            Article.objects.create(title="Test Article", 
+                                   content="New content")
     
     def test_should_calculate_url_for_given_object(self):
         self.assertEqual(f"/articles/{self.article.slug}", 

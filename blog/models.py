@@ -7,7 +7,7 @@ class Article(models.Model):
     title = models.CharField(max_length=120)
     content = models.TextField()
     publish_date = models.DateField(auto_now_add=True)
-    slug = models.SlugField(null=False)
+    slug = models.SlugField(null=False, unique=True)
 
     def __str__(self) -> str:
         """Generates string representation of model.
