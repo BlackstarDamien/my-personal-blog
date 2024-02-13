@@ -1,4 +1,4 @@
-from typing import Dict, Tuple
+from typing import Dict
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -52,11 +52,11 @@ class TestBase(LiveServerTestCase):
         expected_name = PAGES_TITLES[page_name](element_name)
         self.assertEqual(expected_name, self.browser.title)
 
-    def create_dummy_article(self, article: Dict[str, str]) -> Tuple[int, str]:
+    def create_dummy_article(self, article: Dict[str, str]) -> Article:
         """Create dummy article and returns Article's title.
 
         Returns:
-            Tuple[int, str]: Id and title of created article.
+            Article: Instance of created article.
         """
-        article = Article.objects.create(**article)
-        return article.id, article.title
+        return Article.objects.create(**article)
+    

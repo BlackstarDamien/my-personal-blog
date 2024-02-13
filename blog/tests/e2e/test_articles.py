@@ -10,9 +10,6 @@ class TestArticles(TestBase):
     def setUp(self) -> None:
         super().setUp()
         self.create_dummy_admin_user()
-        self.edit_data = {
-            "content": "Edited Content"
-        }
     
     def test_create_article(self):
         """Tests that it's possible to add an article via admin panel.
@@ -26,23 +23,23 @@ class TestArticles(TestBase):
     def test_edit_article(self):
         """Tests that it's possible to edit existing article via admin panel.
         """
-        _, existing_article = self.create_dummy_article(self.article)
+        article = self.create_dummy_article(self.article)
         self.given_an_admin_page()
         self.when_click_link('Articles')
-        self.when_click_link(existing_article)
-        self.then_i_am_on_the_page("edit_article", existing_article)
-        self.then_i_will_edit_existing_article(self.edit_data)
+        self.when_click_link(article.title)
+        self.then_i_am_on_the_page("edit_article", article.title)
+        self.then_i_will_edit_existing_article({"content": "Edited Content"})
     
     def test_delete_article(self):
         """Test that it's possible to remove existing article via admin panel.
         """
-        id, existing_article = self.create_dummy_article(self.article)
+        article = self.create_dummy_article(self.article)
         self.given_an_admin_page()
         self.when_click_link('Articles')
-        self.when_click_link(existing_article)
-        self.then_i_am_on_the_page("edit_article", existing_article)
-        self.then_i_will_remove_existing_article(id)
-        self.then_article_is_not_present(existing_article)
+        self.when_click_link(article.title)
+        self.then_i_am_on_the_page("edit_article", article.title)
+        self.then_i_will_remove_existing_article(article.id)
+        self.then_article_is_not_present(article.title)
 
     def create_dummy_admin_user(self):
         """Create Admin user for testing purpose.

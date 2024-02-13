@@ -38,4 +38,3 @@ class TestArticlePage(TestBase):
             "content": self.article["content"]
         }
         self.assertDictEqual(current_article, expected_article)
-
