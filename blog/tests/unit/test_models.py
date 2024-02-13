@@ -4,49 +4,29 @@ from blog.models import Article
 
 
 class TestArticle(TestCase):
-    def test_should_create_new_article(self):
-        data = {
+    def setUp(self) -> None:
+        self.data = {
             "title": "Test Article",
             "content": "Test Content"
         }
-        Article.objects.create(**data)
-        article = Article.objects.get(title=data["title"])
-        self.assertEqual(article.title, data["title"])
-        self.assertEqual(article.content, data["content"])
+        Article.objects.create(**self.data)
+        self.article = Article.objects.get(title=self.data["title"])
+    
+    def test_should_create_new_article(self):
+        self.assertEqual(self.article.title, self.data["title"])
+        self.assertEqual(self.article.content, self.data["content"])
     
     def test_should_be_represented_by_title(self):
-        data = {
-            "title": "Test Article",
-            "content": "Test Content"
-        }
-        article = Article(**data)
-        self.assertEqual(data["title"], str(article))
+        self.assertEqual(self.data["title"], str(self.article))
 
     def test_should_generate_slug_when_object_is_saved(self):
-        data = {
-            "title": "Test Article",
-            "content": "Test Content"
-        }
-        Article.objects.create(**data)
-        article = Article.objects.get(title=data["title"])
-        self.assertEqual(article.slug, "test-article")
+        self.assertEqual(self.article.slug, "test-article")
     
     def test_should_calculate_url_for_given_object(self):
-        data = {
-            "title": "Test Article",
-            "content": "Test Content"
-        }
-        Article.objects.create(**data)
-        article = Article.objects.get(title=data["title"])
-        self.assertEqual(f"/articles/{article.slug}", article.get_absolute_url())
+        self.assertEqual(f"/articles/{self.article.slug}", 
+                         self.article.get_absolute_url())
     
     def test_should_set_publish_date_once_its_created(self):
-        data = {
-            "title": "Test Article",
-            "content": "Test Content"
-        }
-        Article.objects.create(**data)
-        article = Article.objects.get(title=data["title"])
         current_date = datetime.now().strftime("%Y-%m-%d")
-        expected_date = article.publish_date.strftime("%Y-%m-%d")
+        expected_date = self.article.publish_date.strftime("%Y-%m-%d")
         self.assertEqual(expected_date, current_date)
