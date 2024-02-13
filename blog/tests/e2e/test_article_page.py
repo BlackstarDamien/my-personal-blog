@@ -5,7 +5,7 @@ from blog.tests.e2e.base import TestBase
 
 
 class TestArticlePage(TestBase):    
-    def test_properly_displays_article_page(self):
+    def test_displays_article_page(self):
         """Tests that article page is displayed correctly
         with following sections:
         - Title
