@@ -1,5 +1,4 @@
 from selenium.webdriver.common.by import By
-from blog.models import Article
 from blog.tests.e2e.base import TestBase
 
 
@@ -35,4 +34,4 @@ class TestMainPage(TestBase):
             {"title": "Test Article 3", "content": "Test Article 3"}
         ]
         for article in test_articles:
-            Article.objects.create(**article)
+            self.create_dummy_article(article)

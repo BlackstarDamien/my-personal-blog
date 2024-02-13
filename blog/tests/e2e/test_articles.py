@@ -1,9 +1,8 @@
-from typing import Dict, Tuple
+from typing import Dict
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from django.contrib.auth.models import User
-from blog.models import Article
 from blog.tests.e2e.base import TestBase
 
 
@@ -27,7 +26,7 @@ class TestArticles(TestBase):
     def test_edit_article(self):
         """Tests that it's possible to edit existing article via admin panel.
         """
-        _, existing_article = self.create_dummy_article()
+        _, existing_article = self.create_dummy_article(self.article)
         self.given_an_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(existing_article)
@@ -37,23 +36,13 @@ class TestArticles(TestBase):
     def test_delete_article(self):
         """Test that it's possible to remove existing article via admin panel.
         """
-        id, existing_article = self.create_dummy_article()
+        id, existing_article = self.create_dummy_article(self.article)
         self.given_an_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(existing_article)
         self.then_i_am_on_the_edit_article_page(existing_article)
         self.then_i_will_remove_existing_article(id)
         self.then_article_is_not_present(existing_article)
-
-    def create_dummy_article(self) -> Tuple[int, str]:
-        """Create dummy article and returns Article's title.
-
-        Returns:
-            Tuple[int, str]: Id and title of created article.
-        """
-        Article.objects.create(**self.article)
-        article = Article.objects.get(title=self.article["title"])
-        return article.id, article.title
 
     def create_dummy_admin_user(self):
         """Create Admin user for testing purpose.

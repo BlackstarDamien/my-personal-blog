@@ -1,5 +1,4 @@
 from datetime import datetime
-from blog.models import Article
 from django.template.defaultfilters import slugify
 from selenium.webdriver.common.by import By
 from blog.tests.e2e.base import TestBase
@@ -14,7 +13,6 @@ class TestArticlePage(TestBase):
         - Content
         """
         self.create_dummy_article(self.article)
-        
         self.given_a_main_page()
         self.when_click_link(self.article["title"])
         self.then_i_can_see_article_page(self.article["title"])
@@ -41,7 +39,3 @@ class TestArticlePage(TestBase):
         }
         self.assertDictEqual(current_article, expected_article)
 
-    def create_dummy_article(self, article):
-        """Creates dummy article.
-        """
-        Article.objects.create(**article)

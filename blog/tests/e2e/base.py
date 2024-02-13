@@ -1,7 +1,9 @@
+from typing import Dict, Tuple
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from blog.models import Article
 
 
 class TestBase(LiveServerTestCase):
@@ -34,3 +36,12 @@ class TestBase(LiveServerTestCase):
             link_text (str): Name of link to click.
         """
         self.browser.find_element(By.LINK_TEXT, link_text).click()
+
+    def create_dummy_article(self, article: Dict[str, str]) -> Tuple[int, str]:
+        """Create dummy article and returns Article's title.
+
+        Returns:
+            Tuple[int, str]: Id and title of created article.
+        """
+        article = Article.objects.create(**article)
+        return article.id, article.title
