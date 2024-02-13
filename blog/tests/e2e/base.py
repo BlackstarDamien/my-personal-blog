@@ -43,6 +43,12 @@ class TestBase(LiveServerTestCase):
         self.browser.find_element(By.LINK_TEXT, link_text).click()
     
     def then_i_am_on_the_page(self, page_name: str, element_name: str):
+        """Checks if user is on given page.
+
+        Args:
+            page_name (str): Expected page name
+            element_name (str): Element expected in page's title
+        """
         expected_name = PAGES_TITLES[page_name](element_name)
         self.assertEqual(expected_name, self.browser.title)
 
