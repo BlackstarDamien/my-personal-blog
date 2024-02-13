@@ -5,6 +5,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from blog.models import Article
 
+PAGES_TITLES = {
+    "admin": lambda name: f"Select {name.lower()} to change | Django site admin",
+    "edit_article": lambda name: f"{name} | Change article | Django site admin",
+}
+
 
 class TestBase(LiveServerTestCase):
     def setUp(self) -> None:
@@ -36,6 +41,10 @@ class TestBase(LiveServerTestCase):
             link_text (str): Name of link to click.
         """
         self.browser.find_element(By.LINK_TEXT, link_text).click()
+    
+    def then_i_am_on_the_page(self, page_name: str, element_name: str):
+        expected_name = PAGES_TITLES[page_name](element_name)
+        self.assertEqual(expected_name, self.browser.title)
 
     def create_dummy_article(self, article: Dict[str, str]) -> Tuple[int, str]:
         """Create dummy article and returns Article's title.
