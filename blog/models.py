@@ -17,10 +17,17 @@ class Article(models.Model):
         """
         return self.title
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
+        """Get full url to given Article.
+
+        Returns:
+            str: Absolute url of given Article's instance.
+        """
         return reverse("article_page", kwargs={"slug": self.slug})
 
     def save(self, *args, **kwargs):
+        """Saves given Article's instance into database.
+        """
         if not self.slug or self.slug == '':
             self.slug = slugify(self.title)    
         return super().save(*args, **kwargs)
