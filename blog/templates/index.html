@@ -1,31 +1,16 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Blog</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
-</head>
-<body>
-    <div class="navbar">
-        <div class="blog-title">
-            <h1>My Personal Blog</h1>
-        </div>
-    </div>
-    <div class="blog-content">
-        <ul class="articles-list">
-            {% for article in articles %}
-                <li class="article-title">
-                    <a 
-                        href="{{ article.get_absolute_url }}" 
-                        class="article-link"
-                    >
-                        {{ article.title }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<ul class="articles-list">
+    {% for article in articles %}
+        <li class="article-title">
+            <a 
+                href="{{ article.get_absolute_url }}" 
+                class="article-link"
+            >
+                {{ article.title }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}
