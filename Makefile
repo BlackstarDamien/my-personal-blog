@@ -16,8 +16,11 @@ test-all:
 make-migrations:
 	python manage.py makemigrations
 
-apply-migrations:
+migrate:
 	python manage.py migrate
 
 generate-static:
 	python manage.py collectstatic
+
+deps:
+	pip install -r requirements.txt
