@@ -17,6 +17,18 @@ class TestArticlePage(TestBase):
         self.when_click_link(self.article["title"])
         self.then_i_can_see_article_page(self.article["title"])
     
+    def test_clicking_on_logo_redirects_to_main_page(self):
+        """Tests that clicking on blog's name redirect user
+        to the main page.
+        """
+        article = self.create_dummy_article(self.article)
+        self.given_an_article_page(article.slug)
+        self.when_click_link("My Personal Blog")
+        self.then_i_am_on_the_page("main")
+    
+    def given_an_article_page(self, slug: str):
+        self.browser.get(f"{self.live_server_url}/articles/{slug}")
+    
     def then_i_can_see_article_page(self, page_name: str):
         """Checks if article is displayed properly.
         """

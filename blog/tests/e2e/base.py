@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -8,6 +8,7 @@ from blog.models import Article
 PAGES_TITLES = {
     "admin": lambda name: f"Select {name.lower()} to change | Django site admin",
     "edit_article": lambda name: f"{name} | Change article | Django site admin",
+    "main": lambda _: "My Personal Blog"
 }
 
 
@@ -42,12 +43,12 @@ class TestBase(LiveServerTestCase):
         """
         self.browser.find_element(By.LINK_TEXT, link_text).click()
     
-    def then_i_am_on_the_page(self, page_name: str, element_name: str):
+    def then_i_am_on_the_page(self, page_name: str, element_name: Optional[str] = None):
         """Checks if user is on given page.
 
         Args:
             page_name (str): Expected page name
-            element_name (str): Element expected in page's title
+            element_name (str): Element expected in page's title, by default None
         """
         expected_name = PAGES_TITLES[page_name](element_name)
         self.assertEqual(expected_name, self.browser.title)
