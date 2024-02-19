@@ -4,7 +4,11 @@ from selenium.webdriver.common.by import By
 from blog.tests.e2e.base import TestBase
 
 
-class TestArticlePage(TestBase):    
+class TestArticlePage(TestBase):
+    def setUp(self) -> None:
+        super().setUp()
+        self.current_article = self.create_dummy_article(self.article)
+        
     def test_displays_article_page(self):
         """Tests that article page is displayed correctly
         with following sections:
@@ -12,7 +16,6 @@ class TestArticlePage(TestBase):
         - Publish date
         - Content
         """
-        self.create_dummy_article(self.article)
         self.given_a_main_page()
         self.when_click_link(self.article["title"])
         self.then_i_can_see_article_page(self.article["title"])
@@ -21,8 +24,7 @@ class TestArticlePage(TestBase):
         """Tests that clicking on blog's name redirect user
         to the main page.
         """
-        article = self.create_dummy_article(self.article)
-        self.given_an_article_page(article.slug)
+        self.given_an_article_page(self.current_article.slug)
         self.when_click_link("My Personal Blog")
         self.then_i_am_on_the_page("main")
     
