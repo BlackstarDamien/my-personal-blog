@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block title %}
+    <title>My Personal Blog</title>
+{% endblock %}
+
 {% block content %}
 <ul class="articles-list">
     {% for article in articles %}
