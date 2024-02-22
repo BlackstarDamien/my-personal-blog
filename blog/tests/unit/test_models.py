@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.test import TestCase
 from django.db.utils import IntegrityError
-from blog.models import Article
+from blog.models import Article, AboutMe
 
 
 class TestArticle(TestCase):
@@ -37,3 +37,28 @@ class TestArticle(TestCase):
 
     def create_dummy_article(self, data):
         return Article.objects.create(**data)
+
+
+class TestAboutMe(TestCase):
+    def setUp(self) -> None:
+        self.data = {
+            "title": "About Me",
+            "content": "Something about me"
+        }
+        self.about_me = AboutMe.objects.create(**self.data)
+    
+    def test_should_create_new_about_me_instance(self):
+        self.assertEqual(self.about_me.title, self.data["title"])
+        self.assertEqual(self.about_me.content, self.data["content"])
+    
+    def test_save_not_create_new_instance(self):
+        data = {
+            "title": "About Me",
+            "content": "Something new about me"
+        }
+        AboutMe.objects.create(**data)
+        about_me_count = AboutMe.objects.all().count()
+        about_me_updated = AboutMe.objects.first()
+
+        self.assertEqual(about_me_count, 1)
+        self.assertEqual(about_me_updated.content, data["content"])
