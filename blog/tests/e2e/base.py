@@ -8,6 +8,7 @@ from blog.models import Article
 PAGES_TITLES = {
     "admin": lambda name: f"Select {name.lower()} to change | Django site admin",
     "edit_article": lambda name: f"{name} | Change article | Django site admin",
+    "edit_about_me": lambda name: f"{name} | Change about me | Django site admin",
     "main": lambda _: "My Personal Blog"
 }
 

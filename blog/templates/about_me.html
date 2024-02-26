@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+    <title>{{ about_me.title }}</title>
+{% endblock %}
+
+{% block content %}
+    <header class="about_me-header">
+        <h1 class="about_me-title">
+            {{ about_me.title }}
+        </h1>
+    </header>
+    <article class="about_me-content">
+        {{ about_me.content }}
+    </article>
+{% endblock %}

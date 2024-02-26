@@ -11,7 +11,7 @@ class TestArticlePageView(TestCase):
         self.article_url = self.article.get_absolute_url()
     
     def test_article_page_returns_correct_html(self):
-        """Test that main page returns proper html file.
+        """Test that article page returns proper html file.
         """
         response = self.client.get(self.article_url)
         self.assertTemplateUsed(response, 'article.html')

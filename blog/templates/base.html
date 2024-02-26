@@ -13,6 +13,9 @@
         <div class="blog-title">
             <a href="{% url 'index' %}">My Personal Blog</a>
         </div>
+        <ul class="nav-tabs">
+            <li><a href="{% url 'about_me_page' %}">About Me</a></li>
+        </ul>
     </div>
     <div class="blog-content">
         {% block content %}
