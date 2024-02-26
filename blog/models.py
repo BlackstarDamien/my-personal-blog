@@ -39,6 +39,9 @@ class Article(Page):
 
 
 class AboutMe(Page):
+    class Meta:
+        verbose_name_plural = "about me"
+
     def get_absolute_url(self) -> str:
         """Get full url to About Me Page.
 
