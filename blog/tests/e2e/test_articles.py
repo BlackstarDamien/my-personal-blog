@@ -30,7 +30,8 @@ class TestArticles(TestBase):
         self.when_click_link('Articles')
         self.when_click_link(article.title)
         self.then_i_can_see_admin_edit_article_form(article.title)
-        self.then_i_will_edit_existing_article({"content": "Edited Content"})
+        self.then_i_will_edit_existing_page({"content": "Edited Content"})
+        self.then_i_can_see_admin_list_page("Article")
     
     def test_delete_article(self):
         """Test that it's possible to remove existing article via admin panel.
@@ -43,20 +44,6 @@ class TestArticles(TestBase):
         self.then_i_can_see_admin_edit_article_form(article.title)
         self.then_i_will_remove_existing_article(article.id)
         self.then_article_is_not_present(article.title)
-
-    def then_i_will_edit_existing_article(self, changes: Dict[str, str]):
-        """Edit properties of existing article.
-
-        Args:
-            changes (Dict[str, str]): Fields to change with new values.
-        """
-        for k in changes:
-            field_to_change = self.browser.find_element(By.NAME, k)
-            field_to_change.clear()
-            field_to_change.send_keys(changes[k])
-        
-        self.browser.find_element(By.NAME, "_save").click()
-        self.then_i_can_see_admin_list_page("Article")
 
     def then_i_will_remove_existing_article(self, id: int):
         """Removes existing article.

@@ -101,6 +101,20 @@ class TestBase(LiveServerTestCase):
         content_field.send_keys(details["content"])
         self.browser.find_element(By.NAME, "_save").click()
 
+    def then_i_will_edit_existing_page(self, changes: Dict[str, str]):
+        """Fill edit page form with change for existing page
+        and submit them.
+
+        Args:
+            changes (Dict[str, str]): Fields to change with new values.
+        """
+        for k in changes:
+            field_to_change = self.browser.find_element(By.NAME, k)
+            field_to_change.clear()
+            field_to_change.send_keys(changes[k])
+        
+        self.browser.find_element(By.NAME, "_save").click()
+
     def create_dummy_articles(self):
         """Creates dummy articles.
         """

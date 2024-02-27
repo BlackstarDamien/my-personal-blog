@@ -34,7 +34,8 @@ class TestAboutMePage(TestBase):
         self.when_click_link('About me')
         self.when_click_link(about_me.title)
         self.then_i_can_see_admin_edit_about_me_form(about_me.title)
-        self.then_i_will_edit_about_me_page({"content": "Edited about me"})
+        self.then_i_will_edit_existing_page({"content": "Edited about me"})
+        self.then_i_can_see_admin_list_page("About Me")
 
     def test_displays_about_me_page(self):
         """Tests that About Me page is displayed correctly.
@@ -70,17 +71,3 @@ class TestAboutMePage(TestBase):
             "content": self.about_me["content"]
         }
         self.assertDictEqual(current_about_me, expected_about_me)
-
-    def then_i_will_edit_about_me_page(self, changes: Dict[str, str]):
-        """Edit properties of About Me Page.
-
-        Args:
-            changes (Dict[str, str]): Fields to change with new values.
-        """
-        for k in changes:
-            field_to_change = self.browser.find_element(By.NAME, k)
-            field_to_change.clear()
-            field_to_change.send_keys(changes[k])
-        
-        self.browser.find_element(By.NAME, "_save").click()
-        self.then_i_can_see_admin_list_page("About Me")
