@@ -3,6 +3,7 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from django.contrib.auth.models import User
 from blog.models import Article
 
 
@@ -24,6 +25,12 @@ class TestBase(LiveServerTestCase):
             "content": "Test Content"
         }
 
+        self.admin = {
+            "username": "admin",
+            "email": "admin@admin.com",
+            "password": "adm1n"
+        }
+
     def tearDown(self) -> None:
         self.browser.close()
     
@@ -32,10 +39,16 @@ class TestBase(LiveServerTestCase):
         chrome_options.add_argument("--headless")
         return webdriver.Chrome(options=chrome_options)
 
-    def given_a_main_page(self):
-        """Goes to blog main page.
+    def given_a_page(self, page_name: str, slug: Optional[str] = None):
+        """Goes to app's given page page.
         """
-        self.browser.get(self.live_server_url)
+        PAGES = {
+            "Main": self.live_server_url,
+            "Admin": self.live_server_url + '/admin/',
+            "Article": self.live_server_url + f"/articles/{slug}",
+            "About me": self.live_server_url + "/about-me"
+        }
+        self.browser.get(PAGES[page_name])
 
     def when_click_link(self, link_text: str):
         """Clicks on given link name.
@@ -44,6 +57,16 @@ class TestBase(LiveServerTestCase):
             link_text (str): Name of link to click.
         """
         self.browser.find_element(By.LINK_TEXT, link_text).click()
+    
+    def when_logs_into_admin_page(self):
+        """Logs into admin page."""
+        username_input = self.browser.find_element(By.ID,'id_username')
+        username_input.send_keys(self.admin["username"])
+        password_input = self.browser.find_element(By.ID,'id_password')
+        password_input.send_keys(self.admin["password"])
+
+        self.browser.find_element(By.XPATH, '//input[@value="Log in"]').click()
+        self.assertIn('Site administration', self.browser.title)
     
     def then_i_am_on_the_page(self, page_name: str, element_name: Optional[str] = None):
         """Checks if user is on given page.
@@ -63,11 +86,22 @@ class TestBase(LiveServerTestCase):
         """
         lowered_name = button_name.lower() 
         uri_name = lowered_name.replace(" ", "")
-        
+
         self.browser.refresh()
         self.browser.find_element(By.XPATH, f"//a[@href='/admin/blog/{uri_name}/add/']").click()
         
         self.assertEqual(f"Add {lowered_name} | Django site admin", self.browser.title)
+
+    def create_dummy_articles(self):
+        """Creates dummy articles.
+        """
+        test_articles = [
+            {"title": "Test Article 1", "content": "Test Article 1"},
+            {"title": "Test Article 2", "content": "Test Article 2"},
+            {"title": "Test Article 3", "content": "Test Article 3"}
+        ]
+        for article in test_articles:
+            self.create_dummy_article(article)
 
     def create_dummy_article(self, article: Dict[str, str]) -> Article:
         """Create dummy article and returns Article's title.
@@ -76,4 +110,9 @@ class TestBase(LiveServerTestCase):
             Article: Instance of created article.
         """
         return Article.objects.create(**article)
+
+    def create_dummy_admin_user(self):
+        """Create Admin user for testing purposes.
+        """
+        User.objects.create_superuser(**self.admin)
     

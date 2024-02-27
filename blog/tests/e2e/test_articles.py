@@ -2,7 +2,6 @@ from typing import Dict
 
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
-from django.contrib.auth.models import User
 from blog.tests.e2e.base import TestBase
 
 
@@ -14,7 +13,8 @@ class TestArticles(TestBase):
     def test_create_article(self):
         """Tests that it's possible to add an article via admin panel.
         """
-        self.given_an_admin_page()
+        self.given_a_page("Admin")
+        self.when_logs_into_admin_page()
         self.when_click_link('Articles')
         self.then_i_am_on_the_page("admin", "Article")
         self.then_i_will_click_on_add_button('Article')
@@ -24,7 +24,8 @@ class TestArticles(TestBase):
         """Tests that it's possible to edit existing article via admin panel.
         """
         article = self.create_dummy_article(self.article)
-        self.given_an_admin_page()
+        self.given_a_page("Admin")
+        self.when_logs_into_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(article.title)
         self.then_i_am_on_the_page("edit_article", article.title)
@@ -34,34 +35,13 @@ class TestArticles(TestBase):
         """Test that it's possible to remove existing article via admin panel.
         """
         article = self.create_dummy_article(self.article)
-        self.given_an_admin_page()
+        self.given_a_page("Admin")
+        self.when_logs_into_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(article.title)
         self.then_i_am_on_the_page("edit_article", article.title)
         self.then_i_will_remove_existing_article(article.id)
         self.then_article_is_not_present(article.title)
-
-    def create_dummy_admin_user(self):
-        """Create Admin user for testing purpose.
-        """
-        self.admin = {
-            "username": "admin",
-            "email": "admin@admin.com",
-            "password": "adm1n"
-        }
-        User.objects.create_superuser(**self.admin)
-
-    def given_an_admin_page(self):
-        """Goes and logs into admin page."""
-        self.browser.get(self.live_server_url + '/admin/')
-
-        username_input = self.browser.find_element(By.ID,'id_username')
-        username_input.send_keys(self.admin["username"])
-        password_input = self.browser.find_element(By.ID,'id_password')
-        password_input.send_keys(self.admin["password"])
-
-        self.browser.find_element(By.XPATH, '//input[@value="Log in"]').click()
-        self.assertIn('Site administration', self.browser.title)
     
     def then_i_will_add_new_article(self, new_article: Dict[str, str]):
         """Fill add article form, submits and checks if was created.

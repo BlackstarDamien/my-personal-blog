@@ -2,7 +2,6 @@ from typing import Dict
 
 from selenium.webdriver.common.by import By
 from blog.tests.e2e.base import TestBase
-from django.contrib.auth.models import User
 from blog.models import AboutMe
 
 
@@ -18,7 +17,8 @@ class TestAboutMePage(TestBase):
     def test_fill_about_me_page(self):
         """Tests that it's possible to fill about me page via admin panel.
         """
-        self.given_an_admin_page()
+        self.given_a_page("Admin")
+        self.when_logs_into_admin_page()
         self.when_click_link('About me')
         self.then_i_am_on_the_page("admin", "About me")
         self.then_i_will_click_on_add_button("About me")
@@ -29,7 +29,8 @@ class TestAboutMePage(TestBase):
         via admin panel.
         """
         about_me = self.create_dummy_about_me_page(self.about_me)
-        self.given_an_admin_page()
+        self.given_a_page("Admin")
+        self.when_logs_into_admin_page()
         self.when_click_link('About me')
         self.when_click_link(about_me.title)
         self.then_i_am_on_the_page("edit_about_me", about_me.title)
@@ -39,7 +40,7 @@ class TestAboutMePage(TestBase):
         """Tests that About Me page is displayed correctly.
         """
         self.create_dummy_about_me_page(self.about_me)
-        self.given_a_main_page()
+        self.given_a_page("Main")
         self.when_click_link("About Me")
         self.then_i_can_see_about_me_page()
     
@@ -47,24 +48,9 @@ class TestAboutMePage(TestBase):
         """Tests that clicking on blog's name redirect user
         to the main page.
         """
-        self.given_an_about_me_page()
+        self.given_a_page("About me")
         self.when_click_link("My Personal Blog")
         self.then_i_am_on_the_page("main")
-    
-    def given_an_about_me_page(self):
-        self.browser.get(f"{self.live_server_url}/about-me")
-    
-    def given_an_admin_page(self):
-        """Goes and logs into admin page."""
-        self.browser.get(self.live_server_url + '/admin/')
-
-        username_input = self.browser.find_element(By.ID,'id_username')
-        username_input.send_keys(self.admin["username"])
-        password_input = self.browser.find_element(By.ID,'id_password')
-        password_input.send_keys(self.admin["password"])
-
-        self.browser.find_element(By.XPATH, '//input[@value="Log in"]').click()
-        self.assertIn('Site administration', self.browser.title)
     
     def then_i_can_see_about_me_page(self):
         """Checks if About Me page is displayed properly.
@@ -87,16 +73,6 @@ class TestAboutMePage(TestBase):
     
     def create_dummy_about_me_page(self, data: Dict[str, str]):
         return AboutMe.objects.create(**data)
-    
-    def create_dummy_admin_user(self):
-        """Create Admin user for testing purpose.
-        """
-        self.admin = {
-            "username": "admin",
-            "email": "admin@admin.com",
-            "password": "adm1n"
-        }
-        User.objects.create_superuser(**self.admin)
     
     def then_i_will_add_about_me(self, new_about_me: Dict[str, str]):
         """Fill add article form, submits and checks if was created.
