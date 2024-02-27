@@ -1,5 +1,3 @@
-from typing import Dict
-
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 from blog.tests.e2e.base import TestBase
