@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from blog.models import Article
 
+
 PAGES_TITLES = {
     "admin": lambda name: f"Select {name.lower()} to change | Django site admin",
     "edit_article": lambda name: f"{name} | Change article | Django site admin",
@@ -53,6 +54,20 @@ class TestBase(LiveServerTestCase):
         """
         expected_name = PAGES_TITLES[page_name](element_name)
         self.assertEqual(expected_name, self.browser.title)
+    
+    def then_i_will_click_on_add_button(self, button_name: str):
+        """Clicks on given add button and redirect to create form.
+
+        Args:
+            button_name (str): Name of add button to click.
+        """
+        lowered_name = button_name.lower() 
+        uri_name = lowered_name.replace(" ", "")
+        
+        self.browser.refresh()
+        self.browser.find_element(By.XPATH, f"//a[@href='/admin/blog/{uri_name}/add/']").click()
+        
+        self.assertEqual(f"Add {lowered_name} | Django site admin", self.browser.title)
 
     def create_dummy_article(self, article: Dict[str, str]) -> Article:
         """Create dummy article and returns Article's title.

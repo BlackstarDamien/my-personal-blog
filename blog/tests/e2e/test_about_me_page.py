@@ -21,7 +21,7 @@ class TestAboutMePage(TestBase):
         self.given_an_admin_page()
         self.when_click_link('About me')
         self.then_i_am_on_the_page("admin", "About me")
-        self.then_i_will_click_on_add_button()
+        self.then_i_will_click_on_add_button("About me")
         self.then_i_will_add_about_me(self.about_me)
     
     def test_edit_about_me_page(self):
@@ -97,17 +97,6 @@ class TestAboutMePage(TestBase):
             "password": "adm1n"
         }
         User.objects.create_superuser(**self.admin)
-    
-    def then_i_will_click_on_add_button(self):
-        """Clicks on given add button and redirect to create form.
-
-        Args:
-            button_name (str): Name of add button to click.
-        """
-        self.browser.refresh()
-        self.browser.find_element(By.XPATH, "//a[@href='/admin/blog/aboutme/add/']").click()
-        
-        self.assertEqual("Add about me | Django site admin", self.browser.title)
     
     def then_i_will_add_about_me(self, new_about_me: Dict[str, str]):
         """Fill add article form, submits and checks if was created.

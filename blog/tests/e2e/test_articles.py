@@ -63,19 +63,6 @@ class TestArticles(TestBase):
         self.browser.find_element(By.XPATH, '//input[@value="Log in"]').click()
         self.assertIn('Site administration', self.browser.title)
     
-    def then_i_will_click_on_add_button(self, button_name: str):
-        """Clicks on given add button and redirect to create form.
-
-        Args:
-            button_name (str): Name of add button to click.
-        """
-        name = button_name.lower()
-
-        self.browser.refresh()
-        self.browser.find_element(By.XPATH, f"//a[@href='/admin/blog/{name}/add/']").click()
-        
-        self.assertEqual("Add article | Django site admin", self.browser.title)
-    
     def then_i_will_add_new_article(self, new_article: Dict[str, str]):
         """Fill add article form, submits and checks if was created.
 
