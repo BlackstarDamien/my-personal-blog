@@ -22,7 +22,7 @@ class TestAboutMePage(TestBase):
         self.then_i_can_see_admin_list_page("About me")
         self.then_i_will_click_on_add_button("About me")
         self.then_i_will_add_new_page(self.about_me)
-        self.then_i_can_see_admin_list_page("About Me")
+        self.then_page_is_visible_on_admin_page(self.about_me["title"])
     
     def test_edit_about_me_page(self):
         """Tests that it's possible to edit existing about me page

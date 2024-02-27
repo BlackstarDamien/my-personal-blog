@@ -115,6 +115,15 @@ class TestBase(LiveServerTestCase):
         
         self.browser.find_element(By.NAME, "_save").click()
 
+    def then_page_is_visible_on_admin_page(self, title: str):
+        """Checks if page exists in admin page.
+
+        Args:
+            title (str): Title of article to check.
+        """
+        check = self.browser.find_element(By.LINK_TEXT, title)
+        self.assertEqual(check.text, title)
+
     def create_dummy_articles(self):
         """Creates dummy articles.
         """

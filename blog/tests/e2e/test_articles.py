@@ -19,7 +19,7 @@ class TestArticles(TestBase):
         self.then_i_can_see_admin_list_page("Article")
         self.then_i_will_click_on_add_button('Article')
         self.then_i_will_add_new_page(self.article)
-        self.then_i_can_see_admin_list_page("Article")
+        self.then_page_is_visible_on_admin_page(self.article["title"])
     
     def test_edit_article(self):
         """Tests that it's possible to edit existing article via admin panel.
@@ -44,7 +44,7 @@ class TestArticles(TestBase):
         self.when_logs_into_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(article.title)
-        
+
         self.then_i_can_see_admin_edit_article_form(article.title)
         self.then_i_will_remove_existing_article(article.id)
         self.then_article_is_not_present(article.title)
