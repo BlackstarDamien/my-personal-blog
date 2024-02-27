@@ -2,7 +2,6 @@ from typing import Dict
 
 from selenium.webdriver.common.by import By
 from blog.tests.e2e.base import TestBase
-from blog.models import AboutMe
 
 
 class TestAboutMePage(TestBase):
@@ -20,7 +19,7 @@ class TestAboutMePage(TestBase):
         self.given_a_page("Admin")
         self.when_logs_into_admin_page()
         self.when_click_link('About me')
-        self.then_i_am_on_the_page("admin", "About me")
+        self.then_i_can_see_admin_list_page("About me")
         self.then_i_will_click_on_add_button("About me")
         self.then_i_will_add_about_me(self.about_me)
     
@@ -33,7 +32,7 @@ class TestAboutMePage(TestBase):
         self.when_logs_into_admin_page()
         self.when_click_link('About me')
         self.when_click_link(about_me.title)
-        self.then_i_am_on_the_page("edit_about_me", about_me.title)
+        self.then_i_can_see_admin_edit_about_me_form(about_me.title)
         self.then_i_will_edit_about_me_page({"content": "Edited about me"})
 
     def test_displays_about_me_page(self):
@@ -50,7 +49,7 @@ class TestAboutMePage(TestBase):
         """
         self.given_a_page("About me")
         self.when_click_link("My Personal Blog")
-        self.then_i_am_on_the_page("main")
+        self.then_i_am_on_the_main_page()
     
     def then_i_can_see_about_me_page(self):
         """Checks if About Me page is displayed properly.
@@ -71,9 +70,6 @@ class TestAboutMePage(TestBase):
         }
         self.assertDictEqual(current_about_me, expected_about_me)
     
-    def create_dummy_about_me_page(self, data: Dict[str, str]):
-        return AboutMe.objects.create(**data)
-    
     def then_i_will_add_about_me(self, new_about_me: Dict[str, str]):
         """Fill add article form, submits and checks if was created.
 
@@ -87,7 +83,7 @@ class TestAboutMePage(TestBase):
         content_field.send_keys(new_about_me["content"])
         self.browser.find_element(By.NAME, "_save").click()
 
-        self.then_i_am_on_the_page("admin", "About Me")
+        self.then_i_can_see_admin_list_page("About Me")
 
     def then_i_will_edit_about_me_page(self, changes: Dict[str, str]):
         """Edit properties of About Me Page.
@@ -101,4 +97,4 @@ class TestAboutMePage(TestBase):
             field_to_change.send_keys(changes[k])
         
         self.browser.find_element(By.NAME, "_save").click()
-        self.then_i_am_on_the_page("admin", "About Me")
+        self.then_i_can_see_admin_list_page("About Me")

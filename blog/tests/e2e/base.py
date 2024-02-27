@@ -4,15 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from django.contrib.auth.models import User
-from blog.models import Article
-
-
-PAGES_TITLES = {
-    "admin": lambda name: f"Select {name.lower()} to change | Django site admin",
-    "edit_article": lambda name: f"{name} | Change article | Django site admin",
-    "edit_about_me": lambda name: f"{name} | Change about me | Django site admin",
-    "main": lambda _: "My Personal Blog"
-}
+from blog.models import AboutMe, Article
 
 
 class TestBase(LiveServerTestCase):
@@ -68,15 +60,20 @@ class TestBase(LiveServerTestCase):
         self.browser.find_element(By.XPATH, '//input[@value="Log in"]').click()
         self.assertIn('Site administration', self.browser.title)
     
-    def then_i_am_on_the_page(self, page_name: str, element_name: Optional[str] = None):
-        """Checks if user is on given page.
+    def then_i_can_see_admin_list_page(self, element: str):
+        current = f"Select {element.lower()} to change | Django site admin"
+        self.assertEqual(current, self.browser.title)
 
-        Args:
-            page_name (str): Expected page name
-            element_name (str): Element expected in page's title, by default None
-        """
-        expected_name = PAGES_TITLES[page_name](element_name)
-        self.assertEqual(expected_name, self.browser.title)
+    def then_i_can_see_admin_edit_about_me_form(self, title: str):
+        current = f"{title} | Change about me | Django site admin"
+        self.assertEqual(current, self.browser.title)    
+
+    def then_i_can_see_admin_edit_article_form(self, title: str):
+        current = f"{title} | Change article | Django site admin"
+        self.assertEqual(current, self.browser.title)
+
+    def then_i_am_on_the_main_page(self):
+        self.assertEqual("My Personal Blog", self.browser.title)
     
     def then_i_will_click_on_add_button(self, button_name: str):
         """Clicks on given add button and redirect to create form.
@@ -110,6 +107,9 @@ class TestBase(LiveServerTestCase):
             Article: Instance of created article.
         """
         return Article.objects.create(**article)
+
+    def create_dummy_about_me_page(self, data: Dict[str, str]):
+        return AboutMe.objects.create(**data)
 
     def create_dummy_admin_user(self):
         """Create Admin user for testing purposes.

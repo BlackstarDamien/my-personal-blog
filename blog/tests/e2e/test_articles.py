@@ -16,7 +16,7 @@ class TestArticles(TestBase):
         self.given_a_page("Admin")
         self.when_logs_into_admin_page()
         self.when_click_link('Articles')
-        self.then_i_am_on_the_page("admin", "Article")
+        self.then_i_can_see_admin_list_page("Article")
         self.then_i_will_click_on_add_button('Article')
         self.then_i_will_add_new_article(self.article)
     
@@ -28,7 +28,7 @@ class TestArticles(TestBase):
         self.when_logs_into_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(article.title)
-        self.then_i_am_on_the_page("edit_article", article.title)
+        self.then_i_can_see_admin_edit_article_form(article.title)
         self.then_i_will_edit_existing_article({"content": "Edited Content"})
     
     def test_delete_article(self):
@@ -39,7 +39,7 @@ class TestArticles(TestBase):
         self.when_logs_into_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(article.title)
-        self.then_i_am_on_the_page("edit_article", article.title)
+        self.then_i_can_see_admin_edit_article_form(article.title)
         self.then_i_will_remove_existing_article(article.id)
         self.then_article_is_not_present(article.title)
     
@@ -55,8 +55,8 @@ class TestArticles(TestBase):
         title_field.send_keys(new_article["title"])
         content_field.send_keys(new_article["content"])
         self.browser.find_element(By.NAME, "_save").click()
-
-        self.then_i_am_on_the_page("admin", "Article")
+        
+        self.then_i_can_see_admin_list_page("Article")
 
     def then_i_will_edit_existing_article(self, changes: Dict[str, str]):
         """Edit properties of existing article.
@@ -70,7 +70,7 @@ class TestArticles(TestBase):
             field_to_change.send_keys(changes[k])
         
         self.browser.find_element(By.NAME, "_save").click()
-        self.then_i_am_on_the_page("admin", "Article")
+        self.then_i_can_see_admin_list_page("Article")
 
     def then_i_will_remove_existing_article(self, id: int):
         """Removes existing article.
@@ -78,7 +78,7 @@ class TestArticles(TestBase):
         delete_link = f"//a[@href='/admin/blog/article/{id}/delete/']"
         self.browser.find_element(By.XPATH, delete_link).click()
         self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
-        self.then_i_am_on_the_page("admin", "Article")
+        self.then_i_can_see_admin_list_page("Article")
     
     def then_article_is_not_present(self, title: str):
         """Checks if article exists in admin page.

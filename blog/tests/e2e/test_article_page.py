@@ -26,7 +26,7 @@ class TestArticlePage(TestBase):
         """
         self.given_a_page("Article", self.current_article.slug)
         self.when_click_link("My Personal Blog")
-        self.then_i_am_on_the_page("main")
+        self.then_i_am_on_the_main_page()
     
     def then_i_can_see_article_page(self, page_name: str):
         """Checks if article is displayed properly.
