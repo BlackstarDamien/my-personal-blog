@@ -21,7 +21,8 @@ class TestAboutMePage(TestBase):
         self.when_click_link('About me')
         self.then_i_can_see_admin_list_page("About me")
         self.then_i_will_click_on_add_button("About me")
-        self.then_i_will_add_about_me(self.about_me)
+        self.then_i_will_add_new_page(self.about_me)
+        self.then_i_can_see_admin_list_page("About Me")
     
     def test_edit_about_me_page(self):
         """Tests that it's possible to edit existing about me page
@@ -69,21 +70,6 @@ class TestAboutMePage(TestBase):
             "content": self.about_me["content"]
         }
         self.assertDictEqual(current_about_me, expected_about_me)
-    
-    def then_i_will_add_about_me(self, new_about_me: Dict[str, str]):
-        """Fill add article form, submits and checks if was created.
-
-        Args:
-            new_article (Dict[str, str]): New article's details.
-        """
-        title_field = self.browser.find_element(By.NAME, 'title')
-        content_field = self.browser.find_element(By.NAME, 'content')
-
-        title_field.send_keys(new_about_me["title"])
-        content_field.send_keys(new_about_me["content"])
-        self.browser.find_element(By.NAME, "_save").click()
-
-        self.then_i_can_see_admin_list_page("About Me")
 
     def then_i_will_edit_about_me_page(self, changes: Dict[str, str]):
         """Edit properties of About Me Page.

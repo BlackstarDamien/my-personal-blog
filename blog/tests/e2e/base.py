@@ -89,6 +89,18 @@ class TestBase(LiveServerTestCase):
         
         self.assertEqual(f"Add {lowered_name} | Django site admin", self.browser.title)
 
+    def then_i_will_add_new_page(self, details: Dict[str, str]):
+        """Fill add new page form and submit it.
+        Args:
+            details (Dict[str, str]): Details of the new page.
+        """
+        title_field = self.browser.find_element(By.NAME, 'title')
+        content_field = self.browser.find_element(By.NAME, 'content')
+
+        title_field.send_keys(details["title"])
+        content_field.send_keys(details["content"])
+        self.browser.find_element(By.NAME, "_save").click()
+
     def create_dummy_articles(self):
         """Creates dummy articles.
         """
