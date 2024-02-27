@@ -43,12 +43,12 @@ class TestBase(LiveServerTestCase):
         """Goes to app's given page page.
         """
         PAGES = {
-            "Main": self.live_server_url,
-            "Admin": self.live_server_url + '/admin/',
-            "Article": self.live_server_url + f"/articles/{slug}",
-            "About me": self.live_server_url + "/about-me"
+            "Main": "/",
+            "Admin": '/admin/',
+            "Article": f"/articles/{slug}",
+            "About me": "/about-me"
         }
-        self.browser.get(PAGES[page_name])
+        self.browser.get(self.live_server_url + PAGES[page_name])
 
     def when_click_link(self, link_text: str):
         """Clicks on given link name.
