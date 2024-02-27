@@ -12,8 +12,10 @@ class TestArticles(TestBase):
         """Tests that it's possible to add an article via admin panel.
         """
         self.given_a_page("Admin")
+
         self.when_logs_into_admin_page()
         self.when_click_link('Articles')
+
         self.then_i_can_see_admin_list_page("Article")
         self.then_i_will_click_on_add_button('Article')
         self.then_i_will_add_new_page(self.article)
@@ -24,9 +26,11 @@ class TestArticles(TestBase):
         """
         article = self.create_dummy_article(self.article)
         self.given_a_page("Admin")
+
         self.when_logs_into_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(article.title)
+
         self.then_i_can_see_admin_edit_article_form(article.title)
         self.then_i_will_edit_existing_page({"content": "Edited Content"})
         self.then_i_can_see_admin_list_page("Article")
@@ -36,9 +40,11 @@ class TestArticles(TestBase):
         """
         article = self.create_dummy_article(self.article)
         self.given_a_page("Admin")
+
         self.when_logs_into_admin_page()
         self.when_click_link('Articles')
         self.when_click_link(article.title)
+        
         self.then_i_can_see_admin_edit_article_form(article.title)
         self.then_i_will_remove_existing_article(article.id)
         self.then_article_is_not_present(article.title)

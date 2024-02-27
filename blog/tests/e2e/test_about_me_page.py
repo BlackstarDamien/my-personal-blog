@@ -15,8 +15,10 @@ class TestAboutMePage(TestBase):
         """Tests that it's possible to fill about me page via admin panel.
         """
         self.given_a_page("Admin")
+
         self.when_logs_into_admin_page()
         self.when_click_link('About me')
+
         self.then_i_can_see_admin_list_page("About me")
         self.then_i_will_click_on_add_button("About me")
         self.then_i_will_add_new_page(self.about_me)
@@ -28,9 +30,11 @@ class TestAboutMePage(TestBase):
         """
         about_me = self.create_dummy_about_me_page(self.about_me)
         self.given_a_page("Admin")
+
         self.when_logs_into_admin_page()
         self.when_click_link('About me')
         self.when_click_link(about_me.title)
+
         self.then_i_can_see_admin_edit_about_me_form(about_me.title)
         self.then_i_will_edit_existing_page({"content": "Edited about me"})
         self.then_i_can_see_admin_list_page("About Me")
