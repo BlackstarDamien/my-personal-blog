@@ -14,8 +14,10 @@ class TestMainPage(TestBase):
     def when_vist_this_page(self, page_name: str):
         """Checks if user is on main page
 
-        Args:
-            page_name (str): Blog's name.
+        Parameters
+        ----------
+        page_name : str
+            Name of the page.
         """
         self.assertEqual(page_name, self.browser.title)
     

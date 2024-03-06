@@ -51,6 +51,11 @@ class TestArticles(TestBase):
 
     def then_i_will_remove_existing_article(self, id: int):
         """Removes existing article.
+
+        Parameters
+        ----------
+        id : int
+            Article's id.
         """
         delete_link = f"//a[@href='/admin/blog/article/{id}/delete/']"
         self.browser.find_element(By.XPATH, delete_link).click()
@@ -60,8 +65,10 @@ class TestArticles(TestBase):
     def then_article_is_not_present(self, title: str):
         """Checks if article exists in admin page.
 
-        Args:
-            title (str): Title of article to check.
+        Parameters
+        ----------
+        title : str
+            Title of article to check.
         """
         with self.assertRaises(NoSuchElementException):
             self.browser.find_element(By.LINK_TEXT, title)

@@ -22,13 +22,22 @@ class TestMainPageView(TestCase):
         self.assertListEqual(fetched_articles, expected_articles)
 
     def call_main_page(self) -> HttpResponse:
+        """Sends GET reponse to main page.
+
+        Returns
+        -------
+        HttpResponse
+            Main Page's content.
+        """
         return self.client.get('/')
 
     def create_dummy_articles(self) -> List[Article]:
         """Creates dummy articles.
 
-        Returns:
-            List[Article]: Created dummy articles.
+        Returns
+        -------
+        List[Article]
+            Dummy articles
         """
         test_articles = [
             {"title": "Test Article 1", "content": "Test Article 1"},
