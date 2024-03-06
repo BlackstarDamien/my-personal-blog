@@ -13,8 +13,10 @@ class Page(models.Model):
     def __str__(self) -> str:
         """Generates string representation of model.
 
-        Returns:
-            str: String representation of Article.
+        Returns
+        -------
+        str
+            String representation of Article.
         """
         return self.title
 
@@ -23,15 +25,22 @@ class Article(Page):
     slug = models.SlugField(null=False, unique=True)
 
     def get_absolute_url(self) -> str:
-        """Get full url to given Article.
+        """Get full URL to given Article.
 
-        Returns:
-            str: Absolute url of given Article's instance.
+        Returns
+        -------
+        str
+            Absolute URL of given Article's instance.
         """
         return reverse("article_page", kwargs={"slug": self.slug})
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> "Article":
         """Saves given Article's instance into database.
+
+        Returns
+        -------
+        Article
+            Created or updated instance of Article.
         """
         if not self.slug or self.slug == '':
             self.slug = slugify(self.title)    
@@ -43,17 +52,24 @@ class AboutMe(Page):
         verbose_name_plural = "about me"
 
     def get_absolute_url(self) -> str:
-        """Get full url to About Me Page.
+        """Get full URL to About Me Page.
 
-        Returns:
-            str: Absolute url of About Me page.
+        Returns
+        -------
+        str
+            Absolute URL of About Me page.
         """
         return reverse("about_me_page")
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs) -> "AboutMe":
         """Saves given AboutMe instace into database.
         When a single instance exists, it updates existing
         instance.
+
+        Returns
+        -------
+        AboutMe
+            Created or updated instance of AboutMe.
         """
         self.__class__.objects.exclude(id=self.id).delete()
         return super().save(*args, **kwargs)

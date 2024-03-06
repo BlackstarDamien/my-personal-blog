@@ -16,7 +16,7 @@ class TestArticlePage(TestBase):
         - Publish date
         - Content
         """
-        self.given_a_main_page()
+        self.given_a_page("Main")
         self.when_click_link(self.article["title"])
         self.then_i_can_see_article_page(self.article["title"])
     
@@ -24,12 +24,9 @@ class TestArticlePage(TestBase):
         """Tests that clicking on blog's name redirect user
         to the main page.
         """
-        self.given_an_article_page(self.current_article.slug)
+        self.given_a_page("Article", self.current_article.slug)
         self.when_click_link("My Personal Blog")
-        self.then_i_am_on_the_page("main")
-    
-    def given_an_article_page(self, slug: str):
-        self.browser.get(f"{self.live_server_url}/articles/{slug}")
+        self.then_i_am_on_the_main_page()
     
     def then_i_can_see_article_page(self, page_name: str):
         """Checks if article is displayed properly.
