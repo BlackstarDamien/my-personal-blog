@@ -17,6 +17,11 @@ class TestBase(LiveServerTestCase):
             "content": "Test Content"
         }
 
+        self.about_me = {
+            "title": "About Me",
+            "content": "Something about me"
+        }
+
         self.admin = {
             "username": "admin",
             "email": "admin@admin.com",
@@ -172,6 +177,25 @@ class TestBase(LiveServerTestCase):
         """
         check = self.browser.find_element(By.LINK_TEXT, title)
         self.assertEqual(check.text, title)
+    
+    def then_i_can_see_about_me_page(self):
+        """Checks if About Me page is displayed properly.
+        """
+        expected_url = f"{self.live_server_url}/about-me"
+        self.assertEqual(expected_url, self.browser.current_url)
+
+        title = self.browser.find_element(By.CSS_SELECTOR, ".about_me-title")
+        content = self.browser.find_element(By.CSS_SELECTOR, ".about_me-content")
+        
+        current_about_me = {
+            "title": title.text,
+            "content": content.text
+        }
+        expected_about_me = {
+            "title": self.about_me["title"],
+            "content": self.about_me["content"]
+        }
+        self.assertDictEqual(current_about_me, expected_about_me)
 
     def create_dummy_articles(self):
         """Creates dummy articles.
