@@ -5,10 +5,6 @@ from blog.tests.e2e.base import TestBase
 class TestAboutMePage(TestBase):
     def setUp(self) -> None:
         super().setUp()
-        self.about_me = {
-            "title": "About Me",
-            "content": "Something about me"
-        }
         self.create_dummy_admin_user()
     
     def test_fill_about_me_page(self):
@@ -55,21 +51,10 @@ class TestAboutMePage(TestBase):
         self.when_click_link("My Personal Blog")
         self.then_i_am_on_the_main_page()
     
-    def then_i_can_see_about_me_page(self):
-        """Checks if About Me page is displayed properly.
+    def test_clicking_on_posts_tab_redirects_to_main_page(self):
+        """Tests that clicking on 'Posts' tab in navbar redirect user
+        to the main page.
         """
-        expected_url = f"{self.live_server_url}/about-me"
-        self.assertEqual(expected_url, self.browser.current_url)
-
-        title = self.browser.find_element(By.CSS_SELECTOR, ".about_me-title")
-        content = self.browser.find_element(By.CSS_SELECTOR, ".about_me-content")
-        
-        current_about_me = {
-            "title": title.text,
-            "content": content.text
-        }
-        expected_about_me = {
-            "title": self.about_me["title"],
-            "content": self.about_me["content"]
-        }
-        self.assertDictEqual(current_about_me, expected_about_me)
+        self.given_a_page("About me")
+        self.when_click_link("Posts")
+        self.then_i_am_on_the_main_page()
