@@ -1,4 +1,3 @@
-from selenium.webdriver.common.by import By
 from blog.tests.e2e.base import TestBase
 
 
