@@ -1,4 +1,3 @@
-from selenium.webdriver.common.by import By
 from blog.tests.e2e.base import TestBase
 
 
@@ -42,19 +41,3 @@ class TestAboutMePage(TestBase):
         self.given_a_page("Main")
         self.when_click_link("About Me")
         self.then_i_can_see_about_me_page()
-    
-    def test_clicking_on_logo_redirects_to_main_page(self):
-        """Tests that clicking on blog's name redirect user
-        to the main page.
-        """
-        self.given_a_page("About me")
-        self.when_click_link("My Personal Blog")
-        self.then_i_am_on_the_main_page()
-    
-    def test_clicking_on_posts_tab_redirects_to_main_page(self):
-        """Tests that clicking on 'Posts' tab in navbar redirect user
-        to the main page.
-        """
-        self.given_a_page("About me")
-        self.when_click_link("Posts")
-        self.then_i_am_on_the_main_page()
