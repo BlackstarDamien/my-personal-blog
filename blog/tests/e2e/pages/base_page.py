@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as ec
 class BasePage:
     def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
-        self._wait = WebDriverWait(self.driver, 3)
+        self._wait = WebDriverWait(self.driver, 10)
     
     def wait_for(self, locator: Tuple[str, str]) -> WebElement:
         """Waits for given element to be displayed on page.
@@ -23,7 +23,7 @@ class BasePage:
         WebElement
             Instance of element that appeared on page.
         """
-        return self._wait.until(ec.presence_of_element_located(*locator))
+        return self._wait.until(ec.presence_of_element_located(locator))
     
     def find(self, locator: Tuple[str, str]) -> List[WebElement]:
         """Use given locator to fetch and return instances
