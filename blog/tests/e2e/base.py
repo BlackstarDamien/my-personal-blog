@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Dict, Optional
 from django.test import LiveServerTestCase
 from selenium import webdriver
@@ -14,6 +15,7 @@ class TestBase(LiveServerTestCase):
 
         self.article = {
             "title": "Test Article",
+            "publish_date": datetime.now().strftime("%Y-%m-%d"),
             "content": "Test Content"
         }
 
