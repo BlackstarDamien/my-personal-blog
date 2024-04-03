@@ -53,3 +53,25 @@ class AdminArticlePage(AdminBasePage):
 
 class AdminAboutMePage(AdminBasePage):
     ADD_LOCATOR = (By.XPATH, "//a[@href='/admin/blog/aboutme/add/']")
+    ABOUT_ME_LIST_LOCATOR = (By.LINK_TEXT, "About me")
+    ABOUT_ME_LOCATOR = (By.LINK_TEXT, "About Me")
+
+    def fill_content(self, about_me: dict):
+        self._click_on_add_about_me()
+        self._enter_title(about_me["title"])
+        self._enter_content(about_me["content"])
+        self._click_save_button()
+    
+    def edit(self, changes: dict):
+        self.find(self.ABOUT_ME_LIST_LOCATOR)[0].click()
+        self.find(self.ABOUT_ME_LOCATOR)[0].click()
+
+        for k in changes:
+            field_to_change = self.find((By.NAME, k))[0]
+            field_to_change.clear()
+            field_to_change.send_keys(changes[k])
+        
+        self._click_save_button()
+
+    def _click_on_add_about_me(self):
+        self.find(self.ADD_LOCATOR)[0].click()
