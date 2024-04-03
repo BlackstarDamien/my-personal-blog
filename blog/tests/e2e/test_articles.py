@@ -1,8 +1,10 @@
 from datetime import datetime
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.by import By
-from django.template.defaultfilters import slugify
 from blog.tests.e2e.base import TestBase
+
+from .pages.article_page import ArticlePage
+from .pages.main_page import MainPage
+from .pages.admin_login_page import AdminLoginPage
+from .pages.admin_page import AdminArticlePage
 
 
 class TestArticles(TestBase):
@@ -13,43 +15,53 @@ class TestArticles(TestBase):
     def test_create_article(self):
         """Tests that it's possible to add an article via admin panel.
         """
-        self.given_a_page("Admin")
+        self.browser.get(self.live_server_url)
+        admin_login_page = AdminLoginPage(self.browser)
+        admin_login_page.navigate_to_admin_page()
+        admin_login_page.login(self.admin["username"], self.admin["password"])
+        
+        admin_page = AdminArticlePage(self.browser)
+        admin_page.add_new_article(self.article)
 
-        self.when_logs_into_admin_page()
-        self.when_click_link('Articles')
-
-        self.then_i_can_see_admin_list_page("Article")
-        self.then_i_will_click_on_add_button('Article')
-        self.then_i_will_add_new_page(self.article)
-        self.then_page_is_visible_on_admin_page(self.article["title"])
+        self.browser.get(self.live_server_url)
+        main_page = MainPage(self.browser)
+        self.assertTrue(main_page.is_article_visible(self.article["title"]))
     
     def test_edit_article(self):
         """Tests that it's possible to edit existing article via admin panel.
         """
+        changes = {"content": "Edited Content"}
         article = self.create_dummy_article(self.article)
-        self.given_a_page("Admin")
 
-        self.when_logs_into_admin_page()
-        self.when_click_link('Articles')
-        self.when_click_link(article.title)
+        self.browser.get(self.live_server_url)
+        admin_login_page = AdminLoginPage(self.browser)
+        admin_login_page.navigate_to_admin_page()
+        admin_login_page.login(self.admin["username"], self.admin["password"])
+        
+        admin_page = AdminArticlePage(self.browser)
+        admin_page.edit_article(article.title, changes)
 
-        self.then_i_can_see_admin_edit_article_form(article.title)
-        self.then_i_will_edit_existing_page({"content": "Edited Content"})
-        self.then_i_can_see_admin_list_page("Article")
+        self.browser.get(self.live_server_url)
+        article_page = ArticlePage(self.browser)
+        article_page.navigate_to_article(article.title)
+        self.assertTrue(changes["content"] == article_page.get_content())
     
     def test_delete_article(self):
         """Test that it's possible to remove existing article via admin panel.
         """
         article = self.create_dummy_article(self.article)
-        self.given_a_page("Admin")
 
-        self.when_logs_into_admin_page()
-        self.when_click_link('Articles')
-        self.when_click_link(article.title)
+        self.browser.get(self.live_server_url)
+        admin_login_page = AdminLoginPage(self.browser)
+        admin_login_page.navigate_to_admin_page()
+        admin_login_page.login(self.admin["username"], self.admin["password"])
+        
+        admin_page = AdminArticlePage(self.browser)
+        admin_page.delete_article(article.title)
 
-        self.then_i_can_see_admin_edit_article_form(article.title)
-        self.then_i_will_remove_existing_article(article.id)
-        self.then_article_is_not_present(article.title)
+        self.browser.get(self.live_server_url)
+        main_page = MainPage(self.browser)
+        self.assertFalse(main_page.is_article_visible(article.title))
 
     def test_displays_article_page(self):
         """Tests that article page is displayed correctly
@@ -59,52 +71,14 @@ class TestArticles(TestBase):
         - Content
         """
         article = self.create_dummy_article(self.article)
-        self.given_a_page("Main")
-        self.when_click_link(article.title)
-        self.then_i_can_see_article_page(article.title)
+        self.browser.get(self.live_server_url)
+        article_page = ArticlePage(self.browser)
+        article_page.navigate_to_article(article.title)
 
-    def then_i_will_remove_existing_article(self, id: int):
-        """Removes existing article.
-
-        Parameters
-        ----------
-        id : int
-            Article's id.
-        """
-        delete_link = f"//a[@href='/admin/blog/article/{id}/delete/']"
-        self.browser.find_element(By.XPATH, delete_link).click()
-        self.browser.find_element(By.XPATH, "//input[@type='submit']").click()
-        self.then_i_can_see_admin_list_page("Article")
-    
-    def then_article_is_not_present(self, title: str):
-        """Checks if article exists in admin page.
-
-        Parameters
-        ----------
-        title : str
-            Title of article to check.
-        """
-        with self.assertRaises(NoSuchElementException):
-            self.browser.find_element(By.LINK_TEXT, title)
-
-    def then_i_can_see_article_page(self, page_name: str):
-        """Checks if article is displayed properly.
-        """
-        expected_url = f"{self.live_server_url}/articles/{slugify(page_name)}"
-        self.assertEqual(expected_url, self.browser.current_url)
-
-        title = self.browser.find_element(By.CSS_SELECTOR, ".article-title")
-        publish_date = self.browser.find_element(By.CSS_SELECTOR, ".article-pub-date")
-        content = self.browser.find_element(By.CSS_SELECTOR, ".article-content")
-        
-        current_article = {
-            "title": title.text,
-            "publish_date": publish_date.text,
-            "content": content.text
-        }
         expected_article = {
             "title": self.article["title"],
             "publish_date": datetime.now().strftime("%Y-%m-%d"),
             "content": self.article["content"]
         }
-        self.assertDictEqual(current_article, expected_article)
+        self.assertDictEqual(article_page.to_dict(), expected_article)
+    
