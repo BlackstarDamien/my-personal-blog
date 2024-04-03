@@ -1,4 +1,3 @@
-from datetime import datetime
 from blog.tests.e2e.base import TestBase
 
 from .pages.article_page import ArticlePage
@@ -25,7 +24,12 @@ class TestArticles(TestBase):
 
         self.browser.get(self.live_server_url)
         main_page = MainPage(self.browser)
+
         self.assertTrue(main_page.is_article_visible(self.article["title"]))
+
+        article_page = ArticlePage(self.browser)
+        article_page.navigate_to_article(self.article["title"])
+        self.assertDictEqual(article_page.to_dict(), self.article)
     
     def test_edit_article(self):
         """Tests that it's possible to edit existing article via admin panel.
@@ -62,23 +66,3 @@ class TestArticles(TestBase):
         self.browser.get(self.live_server_url)
         main_page = MainPage(self.browser)
         self.assertFalse(main_page.is_article_visible(article.title))
-
-    def test_displays_article_page(self):
-        """Tests that article page is displayed correctly
-        with following sections:
-        - Title
-        - Publish date
-        - Content
-        """
-        article = self.create_dummy_article(self.article)
-        self.browser.get(self.live_server_url)
-        article_page = ArticlePage(self.browser)
-        article_page.navigate_to_article(article.title)
-
-        expected_article = {
-            "title": self.article["title"],
-            "publish_date": datetime.now().strftime("%Y-%m-%d"),
-            "content": self.article["content"]
-        }
-        self.assertDictEqual(article_page.to_dict(), expected_article)
-    
