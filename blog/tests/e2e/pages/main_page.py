@@ -2,32 +2,27 @@ from typing import List
 from selenium.webdriver.common.by import By
 
 from .base_page import BasePage
-from .article_page import ArticlePage
+from .about_me_page import AboutMePage
 
 class MainPage(BasePage):
     ARTICLES_LOCATOR = (By.CSS_SELECTOR, ".article-link")
     
-    def fetch_articles(self) -> List[ArticlePage]:
+    def fetch_articles(self) -> List[str]:
         """Fetch and return the list of articles.
 
         Returns
         -------
-        List[ArticlePage]
+        List[str]
             List of articles from main page.
         """
-        articles = []
-        for article_locator in self.find(self.ARTICLES_LOCATOR):
-            article_page = ArticlePage(self.driver)
-            article_page.navigate_to_article(article_locator.text)
+        return [loc.text for loc in self.find(self.ARTICLES_LOCATOR)]
 
-        return articles
-
-    def is_article_visible(self, title: str) -> bool:
+    def is_article_visible(self, checked_title: str) -> bool:
         """Checks if given article is visible on main page.
 
         Parameters
         ----------
-        title : str
+        checked_title : str
             Checked article's title
 
         Returns
@@ -36,9 +31,11 @@ class MainPage(BasePage):
             True if exists, False otherwise.
         """
         all_articles = self.fetch_articles()
-        for article in all_articles:
-            if article.get_title() == title:
+        for title in all_articles:
+            if title == checked_title:
                 return True
-        
         return False
+    
+    def go_to_about_me_page(self) -> AboutMePage:
+        return AboutMePage(self.driver).navigate_to()
     
