@@ -7,6 +7,7 @@ class AdminBasePage(BasePage):
     TITLE_LOCATOR = (By.NAME, 'title')
     CONTENT_LOCATOR = (By.NAME, 'content')
     SAVE_BTN_LOCATOR = (By.NAME, "_save")
+    DELETE_BTN_LOCATOR = (By.LINK_TEXT, "Delete")
     SUBMIT_BTN_LOCATOR = (By.XPATH, "//input[@type='submit']")
     
     def _enter_title(self, title: str):
@@ -21,6 +22,7 @@ class AdminBasePage(BasePage):
 
 class AdminArticlePage(AdminBasePage):
     ADD_LOCATOR = (By.XPATH, "//a[@href='/admin/blog/article/add/']")
+    ARTICLES_LOCATOR = (By.LINK_TEXT, "Articles")
 
     def add_new_article(self, article: dict):
         self._click_on_add_article()
@@ -29,6 +31,7 @@ class AdminArticlePage(AdminBasePage):
         self._click_save_button()
     
     def edit_article(self, title: str, changes: dict):
+        self.find(self.ARTICLES_LOCATOR)[0].click()
         self.find((By.LINK_TEXT, title))[0].click()
 
         for k in changes:
@@ -38,9 +41,10 @@ class AdminArticlePage(AdminBasePage):
         
         self._click_save_button()
     
-    def delete_article(self, id: str):
-        delete_link = f"//a[@href='/admin/blog/article/{id}/delete/']"
-        self.find((By.XPATH, delete_link))[0].click()
+    def delete_article(self, title: str):
+        self.find(self.ARTICLES_LOCATOR)[0].click()
+        self.find((By.LINK_TEXT, title))[0].click()
+        self.find(self.DELETE_BTN_LOCATOR)[0].click()
         self.find(self.SUBMIT_BTN_LOCATOR)[0].click()
     
     def _click_on_add_article(self):
