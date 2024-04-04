@@ -9,6 +9,7 @@ class BasePage:
     def __init__(self, driver: WebDriver) -> None:
         self.driver = driver
         self._wait = WebDriverWait(self.driver, 10)
+        self.base_url = self.__get_base_url()
     
     def wait_for(self, locator: Tuple[str, str]) -> WebElement:
         """Waits for given element to be displayed on page.
@@ -41,3 +42,7 @@ class BasePage:
         """
         return self.driver.find_elements(*locator)
 
+    def __get_base_url(self) -> str:
+        url_raw = self.driver.current_url
+        return "http://" + url_raw.split('/')[2]
+    
