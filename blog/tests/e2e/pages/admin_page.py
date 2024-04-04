@@ -31,7 +31,7 @@ class AdminArticlePage(AdminBasePage):
         self._click_save_button()
     
     def edit_article(self, title: str, changes: dict):
-        self.find(self.ARTICLES_LOCATOR)[0].click()
+        self.navigate()
         self.find((By.LINK_TEXT, title))[0].click()
 
         for k in changes:
@@ -42,10 +42,21 @@ class AdminArticlePage(AdminBasePage):
         self._click_save_button()
     
     def delete_article(self, title: str):
-        self.find(self.ARTICLES_LOCATOR)[0].click()
+        self.navigate()
         self.find((By.LINK_TEXT, title))[0].click()
         self.find(self.DELETE_BTN_LOCATOR)[0].click()
         self.find(self.SUBMIT_BTN_LOCATOR)[0].click()
+    
+    def navigate(self) -> "AdminArticlePage":
+        """Open articles section in Admin Page.
+
+        Returns
+        -------
+        AdminArticlePage
+            Articles section
+        """
+        self.find(self.ARTICLES_LOCATOR)[0].click()
+        return self
     
     def _click_on_add_article(self):
         self.find(self.ADD_LOCATOR)[0].click()
@@ -63,7 +74,7 @@ class AdminAboutMePage(AdminBasePage):
         self._click_save_button()
     
     def edit(self, changes: dict):
-        self.find(self.ABOUT_ME_LIST_LOCATOR)[0].click()
+        self.navigate()
         self.find(self.ABOUT_ME_LOCATOR)[0].click()
 
         for k in changes:
@@ -73,5 +84,38 @@ class AdminAboutMePage(AdminBasePage):
         
         self._click_save_button()
 
+    def navigate(self) -> "AdminAboutMePage":
+        """Open About Me section in Admin Page.
+
+        Returns
+        -------
+        AdminAboutMePage
+            _description_
+        """
+        self.find(self.ABOUT_ME_LIST_LOCATOR)[0].click()
+        return self
+
     def _click_on_add_about_me(self):
         self.find(self.ADD_LOCATOR)[0].click()
+
+class AdminPage(AdminBasePage):
+    def navigate_to_articles(self) -> AdminArticlePage:
+        """Redirects to articles section.
+
+        Returns
+        -------
+        AdminArticlePage
+            Articles section
+        """
+        return AdminArticlePage(self.driver).navigate()
+    
+    def navigate_to_about_me(self) -> AdminAboutMePage:
+        """Redirects to About Me section.
+
+        Returns
+        -------
+        AdminAboutMePage
+            About Me section
+        """
+        return AdminAboutMePage(self.driver).navigate()
+    
