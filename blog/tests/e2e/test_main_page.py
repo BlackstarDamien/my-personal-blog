@@ -6,9 +6,8 @@ class TestMainPage(TestBase):
         """Tests that main page displays list of existing articles.
         """
         self.create_dummy_articles()
-        self.browser.get(self.live_server_url)
         
-        main_page = MainPage(self.browser)
+        main_page = MainPage(self.browser).navigate()
         articles = main_page.fetch_articles()
 
         self.assertTrue(len(articles) > 0)
