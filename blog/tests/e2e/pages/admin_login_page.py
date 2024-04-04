@@ -8,7 +8,7 @@ class AdminLoginPage(BasePage):
     PWD_LOCATOR = (By.ID,'id_password')
     SUBMIT_BTN_LOCATOR = (By.XPATH, '//input[@value="Log in"]')
 
-    def navigate_to_admin_page(self):
+    def navigate(self):
         """Moves user to admin page of given website.
         """
         admin_page_url = self.driver.current_url + "/admin"

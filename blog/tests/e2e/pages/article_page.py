@@ -1,10 +1,12 @@
 from typing import Dict
+from django.template.defaultfilters import slugify
 from selenium.webdriver.common.by import By
 
 from .base_page import BasePage
 
 
 class ArticlePage(BasePage):
+    PAGE_URI = "/articles/"
     TITLE_LOCATOR = (By.CSS_SELECTOR, ".article-title")
     DATE_LOCATOR = (By.CSS_SELECTOR, ".article-pub-date")
     CONTENT_LOCATOR = (By.CSS_SELECTOR, ".article-content")
@@ -53,7 +55,7 @@ class ArticlePage(BasePage):
             "content": self.get_content()
         }
     
-    def navigate_to_article(self, title: str):
+    def navigate(self, title: str) -> "ArticlePage":
         """Opens an article for given title.
 
         Parameters
@@ -61,5 +63,7 @@ class ArticlePage(BasePage):
         title : str
             Article's title
         """
-        article_locator = (By.LINK_TEXT, title)
-        return self.wait_for(article_locator).click()
+        page_url = f"{self.base_url}{self.PAGE_URI}"
+        self.driver.get(page_url + slugify(title))
+        return self
+    

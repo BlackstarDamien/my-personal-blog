@@ -2,7 +2,6 @@ from typing import List
 from selenium.webdriver.common.by import By
 
 from .base_page import BasePage
-from .about_me_page import AboutMePage
 
 class MainPage(BasePage):
     ARTICLES_LOCATOR = (By.CSS_SELECTOR, ".article-link")
@@ -36,6 +35,8 @@ class MainPage(BasePage):
                 return True
         return False
     
-    def go_to_about_me_page(self) -> AboutMePage:
-        return AboutMePage(self.driver).navigate_to()
+    def navigate(self) -> "MainPage":
+        """Opens an Main Page page."""
+        self.driver.get(self.base_url)
+        return self
     

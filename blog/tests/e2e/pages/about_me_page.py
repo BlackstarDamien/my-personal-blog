@@ -5,7 +5,7 @@ from .base_page import BasePage
 
 
 class AboutMePage(BasePage):
-    PAGE_LOCATOR = (By.LINK_TEXT, "About Me")
+    PAGE_URI = "/about-me"
     TITLE_LOCATOR = (By.CSS_SELECTOR, ".about_me-title")
     CONTENT_LOCATOR = (By.CSS_SELECTOR, ".about_me-content")
 
@@ -42,8 +42,9 @@ class AboutMePage(BasePage):
             "content": self.get_content()
         }
     
-    def navigate_to(self) -> "AboutMePage":
+    def navigate(self) -> "AboutMePage":
         """Opens an About Me page."""
-        self.wait_for(self.PAGE_LOCATOR).click()
+        page_url = f"{self.base_url}{self.PAGE_URI}"
+        self.driver.get(page_url)
         return self
     
