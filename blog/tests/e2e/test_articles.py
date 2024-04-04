@@ -14,12 +14,11 @@ class TestArticles(TestBase):
     def test_create_article(self):
         """Tests that it's possible to add an article via admin panel.
         """
-        admin_login_page = AdminLoginPage(self.browser)
-        admin_login_page.navigate()
-        admin_login_page.login(self.admin["username"], self.admin["password"])
+        admin_login_page = AdminLoginPage(self.browser).navigate()
+        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
         
-        admin_page = AdminArticlePage(self.browser)
-        admin_page.add_new_article(self.article)
+        admin_articles_page = admin_page.navigate_to_articles()
+        admin_articles_page.add_new_article(self.article)
 
         main_page = MainPage(self.browser).navigate()
         self.assertTrue(main_page.is_article_visible(self.article["title"]))
@@ -33,12 +32,11 @@ class TestArticles(TestBase):
         changes = {"content": "Edited Content"}
         article = self.create_dummy_article(self.article)
 
-        admin_login_page = AdminLoginPage(self.browser)
-        admin_login_page.navigate()
-        admin_login_page.login(self.admin["username"], self.admin["password"])
+        admin_login_page = AdminLoginPage(self.browser).navigate()
+        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
         
-        admin_page = AdminArticlePage(self.browser)
-        admin_page.edit_article(article.title, changes)
+        admin_articles_page = admin_page.navigate_to_articles()
+        admin_articles_page.edit_article(article.title, changes)
 
         article_page = ArticlePage(self.browser).navigate(article.title)
         self.assertTrue(changes["content"] == article_page.get_content())
@@ -48,12 +46,11 @@ class TestArticles(TestBase):
         """
         article = self.create_dummy_article(self.article)
 
-        admin_login_page = AdminLoginPage(self.browser)
-        admin_login_page.navigate()
-        admin_login_page.login(self.admin["username"], self.admin["password"])
+        admin_login_page = AdminLoginPage(self.browser).navigate()
+        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
         
-        admin_page = AdminArticlePage(self.browser)
-        admin_page.delete_article(article.title)
+        admin_articles_page = admin_page.navigate_to_articles()
+        admin_articles_page.delete_article(article.title)
 
         main_page = MainPage(self.browser).navigate()
         self.assertFalse(main_page.is_article_visible(article.title))
