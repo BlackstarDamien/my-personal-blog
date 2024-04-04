@@ -12,6 +12,7 @@ class TestBase(LiveServerTestCase):
     def setUp(self) -> None:
         self.browser = self.__init_browser()
         self.browser.implicitly_wait(3)
+        self.browser.get(self.live_server_url)
 
         self.article = {
             "title": "Test Article",
