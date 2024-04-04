@@ -1,4 +1,6 @@
 from blog.tests.e2e.base import TestBase
+from .pages.admin_login_page import AdminLoginPage
+from .pages.about_me_page import AboutMePage
 
 
 class TestAboutMePage(TestBase):
@@ -9,35 +11,28 @@ class TestAboutMePage(TestBase):
     def test_fill_about_me_page(self):
         """Tests that it's possible to fill about me page via admin panel.
         """
-        self.given_a_page("Admin")
+        admin_login_page = AdminLoginPage(self.browser).navigate()
+        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
+        
+        admin_about_me_page = admin_page.navigate_to_about_me()
+        admin_about_me_page.fill_content(self.about_me)
 
-        self.when_logs_into_admin_page()
-        self.when_click_link('About me')
+        about_me_page = AboutMePage(self.browser).navigate()
 
-        self.then_i_can_see_admin_list_page("About me")
-        self.then_i_will_click_on_add_button("About me")
-        self.then_i_will_add_new_page(self.about_me)
-        self.then_page_is_visible_on_admin_page(self.about_me["title"])
+        self.assertDictEqual(about_me_page.to_dict(), self.about_me)
     
     def test_edit_about_me_page(self):
         """Tests that it's possible to edit existing about me page
         via admin panel.
         """
-        about_me = self.create_dummy_about_me_page(self.about_me)
-        self.given_a_page("Admin")
-
-        self.when_logs_into_admin_page()
-        self.when_click_link('About me')
-        self.when_click_link(about_me.title)
-
-        self.then_i_can_see_admin_edit_about_me_form(about_me.title)
-        self.then_i_will_edit_existing_page({"content": "Edited about me"})
-        self.then_i_can_see_admin_list_page("About Me")
-
-    def test_displays_about_me_page(self):
-        """Tests that About Me page is displayed correctly.
-        """
         self.create_dummy_about_me_page(self.about_me)
-        self.given_a_page("Main")
-        self.when_click_link("About Me")
-        self.then_i_can_see_about_me_page()
+        change = {"content": "Edited about me"}
+
+        admin_login_page = AdminLoginPage(self.browser).navigate()
+        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
+        
+        admin_about_me_page = admin_page.navigate_to_about_me()
+        admin_about_me_page.edit(change)
+
+        about_me_page = AboutMePage(self.browser).navigate()
+        self.assertEqual(about_me_page.get_content(), change["content"])
