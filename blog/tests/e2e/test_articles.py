@@ -3,7 +3,6 @@ from blog.tests.e2e.base import TestBase
 from .pages.article_page import ArticlePage
 from .pages.main_page import MainPage
 from .pages.admin_login_page import AdminLoginPage
-from .pages.admin_page import AdminArticlePage
 
 
 class TestArticles(TestBase):
