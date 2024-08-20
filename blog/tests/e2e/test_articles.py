@@ -53,3 +53,37 @@ class TestArticles(TestBase):
 
         main_page = MainPage(self.browser).navigate()
         self.assertFalse(main_page.is_article_visible(article.title))
+
+    def test_can_handle_markdown_format(self):
+        """Test that it's possible to handle content written in Markdown"""
+        md_article = {
+            "title": "Test Article",
+            "publish_date": "2024-10-11",
+            "content": """
+                # Some good title
+
+                ## Part One
+                This is part one
+
+                ## Part Two
+                This is part two
+            """
+        }
+        admin_login_page = AdminLoginPage(self.browser).navigate()
+        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
+        
+        admin_articles_page = admin_page.navigate_to_articles()
+        admin_articles_page.add_new_article(md_article)
+
+        article_page = ArticlePage(self.browser).navigate(self.article["title"])
+        content = article_page.get_content()
+        expected = """
+            Some good title
+
+            Part One
+            This is part one
+
+            Part Two
+            This is part two
+        """
+        self.assertEqual(content, expected)
