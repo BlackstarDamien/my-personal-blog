@@ -32,6 +32,5 @@ class TestArticlePageView(TestCase):
         md_article_url = md_article.get_absolute_url()
         response = self.client.get(md_article_url)
         expected = """<h1>Test title</h1>\n<p>Test content</p>"""
-        print(response.content)
 
         self.assertInHTML(expected, str(response.content))
