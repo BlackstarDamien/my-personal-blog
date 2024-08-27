@@ -34,7 +34,7 @@ class TestBase(LiveServerTestCase):
         self.browser.close()
     
     def __init_browser(self) -> webdriver.Chrome:
-        """Initilize webdriver object for Chrome.
+        """Initialize webdriver object for Chrome.
 
         Returns
         -------
@@ -42,6 +42,7 @@ class TestBase(LiveServerTestCase):
             Instance of Chrome webdriver.
         """
         chrome_options = Options()
+        chrome_options.add_argument("--disable-search-engine-choice-screen")
         chrome_options.add_argument("--headless")
         return webdriver.Chrome(options=chrome_options)
 

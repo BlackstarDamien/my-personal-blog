@@ -21,3 +21,16 @@ class TestArticlePageView(TestCase):
         """
         response = self.client.get(self.article_url)
         self.assertEqual(self.article, response.context["article"])
+
+    def test_article_page_handle_markdown_content(self):
+        """Tests that article page properly converts Markdown format."""
+        md_article = Article.objects.create(
+            title="Test Article MD",
+            content="""# Test title\nTest content"""
+        )
+
+        md_article_url = md_article.get_absolute_url()
+        response = self.client.get(md_article_url)
+        expected = """<h1>Test title</h1>\n<p>Test content</p>"""
+
+        self.assertInHTML(expected, str(response.content))
