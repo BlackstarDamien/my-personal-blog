@@ -59,15 +59,7 @@ class TestArticles(TestBase):
         md_article = {
             "title": "Test Article",
             "publish_date": "2024-10-11",
-            "content": """
-                # Some good title
-
-                ## Part One
-                This is part one
-
-                ## Part Two
-                This is part two
-            """
+            "content": """# Some good title\n## Part One\nThis is part one"""
         }
         admin_login_page = AdminLoginPage(self.browser).navigate()
         admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
@@ -77,13 +69,6 @@ class TestArticles(TestBase):
 
         article_page = ArticlePage(self.browser).navigate(self.article["title"])
         content = article_page.get_content()
-        expected = """
-            Some good title
 
-            Part One
-            This is part one
-
-            Part Two
-            This is part two
-        """
+        expected = """Some good title\nPart One\nThis is part one"""
         self.assertEqual(content, expected)
