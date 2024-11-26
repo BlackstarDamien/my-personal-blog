@@ -90,7 +90,7 @@ class AdminAboutMePage(AdminBasePage):
         Returns
         -------
         AdminAboutMePage
-            _description_
+            About Me section
         """
         self.find(self.ABOUT_ME_LIST_LOCATOR)[0].click()
         return self
