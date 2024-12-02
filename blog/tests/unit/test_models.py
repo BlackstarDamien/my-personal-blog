@@ -1,7 +1,7 @@
 from datetime import datetime
 from django.test import TestCase
 from django.db.utils import IntegrityError
-from blog.models import Article, AboutMe
+from blog.models import Article, AboutMe, Image
 from django.core.files.images import ImageFile
 from pathlib import Path
 
@@ -110,4 +110,4 @@ class TestImage(TestCase):
                 url=ImageFile(f, name=path_to_image.name)
             )
         self.assertEqual(image.name, "black-cat")
-        self.assertEqual(image.url, "/images/black-cat.jpg")
+        self.assertEqual(image.url.url, "/images/black-cat.jpg")
