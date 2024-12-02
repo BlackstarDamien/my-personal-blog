@@ -1,5 +1,7 @@
 from django.test import TestCase
 from blog.models import Article
+from pathlib import Path
+from django.core.files.images import ImageFile
 
 
 class TestArticlePageView(TestCase):
@@ -34,3 +36,29 @@ class TestArticlePageView(TestCase):
         expected = """<h1>Test title</h1>\n<p>Test content</p>"""
 
         self.assertInHTML(expected, str(response.content))
+
+    def test_article_page_handle_images(self):
+        """Tests that article page is able to display images.
+        """
+        with open(Path(__file__).parent.parent / "data/article-with-image.md") as f:
+            article_content = f.read()
+
+        article_with_images = Article.objects.create(
+            title="Test Article With Image",
+            content=article_content
+        )
+
+        path_to_image = Path(__file__).parent.parent / "data/black-cat.jpg"
+        with path_to_image.open(mode='rb') as f:
+            article_image = Image()
+            article_image.article_id = article_with_images.id
+            article_image.name = "black_cat"
+            article_image.url = ImageFile(f, name=path_to_image.name)
+            article_image.save()
+
+        article_url = article_with_images.get_absolute_url()
+        response = self.client.get(article_url)
+        expected = f"""<img src="/images/black-cat.jpg">"""
+
+        self.assertInHTML(expected, str(response.content))
+        
