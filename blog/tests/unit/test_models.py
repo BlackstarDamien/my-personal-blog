@@ -2,6 +2,8 @@ from datetime import datetime
 from django.test import TestCase
 from django.db.utils import IntegrityError
 from blog.models import Article, AboutMe
+from django.core.files.images import ImageFile
+from pathlib import Path
 
 
 class TestArticle(TestCase):
@@ -96,3 +98,16 @@ class TestAboutMe(TestCase):
 
         self.assertEqual(about_me_count, 1)
         self.assertEqual(about_me_updated.content, data["content"])
+
+class TestImage(TestCase):
+    def test_should_create_new_instance(self):
+        """Checks if object model for Image is created properly.
+        """
+        path_to_image = Path(__file__).parent.parent / "data/black-cat.jpg"
+        with path_to_image.open(mode='rb') as f:
+            image = Image.objects.create(
+                name="black-cat",
+                url=ImageFile(f, name=path_to_image.name)
+            )
+        self.assertEqual(image.name, "black-cat")
+        self.assertEqual(image.url, "/images/black-cat.jpg")
