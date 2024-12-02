@@ -1,4 +1,5 @@
 from blog.tests.e2e.base import TestBase
+from pathlib import Path
 
 from .pages.article_page import ArticlePage
 from .pages.main_page import MainPage
@@ -17,7 +18,7 @@ class TestArticles(TestBase):
         admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
         
         admin_articles_page = admin_page.navigate_to_articles()
-        admin_articles_page.add_new_article(self.article)
+        admin_articles_page.add_new_article(self.article).save()
 
         main_page = MainPage(self.browser).navigate()
         self.assertTrue(main_page.is_article_visible(self.article["title"]))
@@ -65,10 +66,34 @@ class TestArticles(TestBase):
         admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
         
         admin_articles_page = admin_page.navigate_to_articles()
-        admin_articles_page.add_new_article(md_article)
+        admin_articles_page.add_new_article(md_article).save()
 
         article_page = ArticlePage(self.browser).navigate(self.article["title"])
         content = article_page.get_content()
 
         expected = """Some good title\nPart One\nThis is part one"""
         self.assertEqual(content, expected)
+    
+    def test_can_display_images_inside_article(self):
+        """Tests that it's possible to render all images inside an article.
+        """
+        article = {
+            "title": "Test Article With Image",
+            "publish_date": "2024-10-11",
+        }
+
+        with open(Path(__file__).parent.parent / "data/article-with-image.md") as f:
+            article["content"] = f.read()
+        
+        admin_login_page = AdminLoginPage(self.browser).navigate()
+        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
+        admin_articles_page = admin_page.navigate_to_articles()
+
+        path_to_image = Path(__file__).parent.parent / "data/black-cat.jpg"
+        admin_articles_page.add_new_article(article).attach_images(path_to_image).save()
+
+        article_page = ArticlePage(self.browser).navigate(self.article["title"])
+        images = article_page.get_all_images()
+
+        self.assertEqual(len(images), 1)
+        self.assertEqual((images[0].text), "covers/black-cat.jpg")
