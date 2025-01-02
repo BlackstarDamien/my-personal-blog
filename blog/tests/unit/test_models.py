@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from django.test import TestCase
 from django.db.utils import IntegrityError
@@ -100,6 +101,9 @@ class TestAboutMe(TestCase):
         self.assertEqual(about_me_updated.content, data["content"])
 
 class TestImage(TestCase):
+    def tearDown(self):
+        os.remove("images/black-cat.jpg")
+    
     def test_should_create_new_instance(self):
         """Checks if object model for Image is created properly.
         """
