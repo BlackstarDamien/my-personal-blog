@@ -76,4 +76,5 @@ class AboutMe(Page):
 
 class Image(models.Model):
     name = models.CharField(max_length=120)
-    url = models.ImageField(upload_to="images")
+    url = models.ImageField(upload_to="images", null=True, blank=True)
+    article = models.ForeignKey(Article, related_name="images", on_delete=models.CASCADE)
