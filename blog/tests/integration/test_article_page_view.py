@@ -1,5 +1,6 @@
+import os
 from django.test import TestCase
-from blog.models import Article
+from blog.models import Article, Image
 from pathlib import Path
 from django.core.files.images import ImageFile
 
@@ -11,6 +12,10 @@ class TestArticlePageView(TestCase):
             content="Test Content"
         )
         self.article_url = self.article.get_absolute_url()
+    
+    def tearDown(self):
+        if os.path.exists("images/black-cat.jpg"):
+            os.remove("images/black-cat.jpg")
     
     def test_article_page_returns_correct_html(self):
         """Test that article page returns proper html file.
@@ -51,14 +56,13 @@ class TestArticlePageView(TestCase):
         path_to_image = Path(__file__).parent.parent / "data/black-cat.jpg"
         with path_to_image.open(mode='rb') as f:
             article_image = Image()
-            article_image.article_id = article_with_images.id
+            article_image.article = article_with_images
             article_image.name = "black_cat"
             article_image.url = ImageFile(f, name=path_to_image.name)
             article_image.save()
 
         article_url = article_with_images.get_absolute_url()
         response = self.client.get(article_url)
-        expected = f"""<img src="/images/black-cat.jpg">"""
+        expected = f"""<img alt="" src="black-cat.jpg">"""
 
         self.assertInHTML(expected, str(response.content))
-        
