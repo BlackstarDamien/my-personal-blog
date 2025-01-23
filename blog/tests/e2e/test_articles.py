@@ -96,4 +96,4 @@ class TestArticles(TestBase):
         images = article_page.get_all_images()
 
         self.assertEqual(len(images), 1)
-        self.assertEqual((images[0].text), "covers/black-cat.jpg")
+        self.assertEqual((images[0].text), "black-cat.jpg")
