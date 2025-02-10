@@ -97,4 +97,4 @@ class TestArticles(TestBase):
 
         self.assertEqual(len(images), 1)
         image_name = images[0].get_attribute("src").split("/")[-1]
-        self.assertRegex(image_name, "black-cat(\_.*)?\.jpg")
+        self.assertRegex(image_name, r"black-cat(\_.*)?\.jpg")

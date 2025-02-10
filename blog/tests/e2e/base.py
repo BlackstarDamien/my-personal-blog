@@ -5,6 +5,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from django.contrib.auth.models import User
 from blog.models import AboutMe, Article
+from shutil import rmtree
+from django.conf import settings
 
 
 class TestBase(LiveServerTestCase):
@@ -12,6 +14,7 @@ class TestBase(LiveServerTestCase):
         self.browser = self.__init_browser()
         self.browser.implicitly_wait(3)
         self.browser.get(self.live_server_url)
+        rmtree(settings.MEDIA_ROOT, ignore_errors=True)
 
         self.article = {
             "title": "Test Article",
@@ -32,6 +35,7 @@ class TestBase(LiveServerTestCase):
 
     def tearDown(self) -> None:
         self.browser.close()
+        rmtree(settings.MEDIA_ROOT, ignore_errors=True)
     
     def __init_browser(self) -> webdriver.Chrome:
         """Initialize webdriver object for Chrome.
