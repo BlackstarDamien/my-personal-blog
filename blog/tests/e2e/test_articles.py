@@ -73,12 +73,12 @@ class TestArticles(TestBase):
 
         expected = """Some good title\nPart One\nThis is part one"""
         self.assertEqual(content, expected)
-    
+       
     def test_can_display_images_inside_article(self):
         """Tests that it's possible to render all images inside an article.
         """
         article = {
-            "title": "Test Article With Image",
+            "title": "Article With Image",
             "publish_date": "2024-10-11",
         }
 
@@ -92,8 +92,9 @@ class TestArticles(TestBase):
         path_to_image = Path(__file__).parent.parent / "data/black-cat.jpg"
         admin_articles_page.add_new_article(article).attach_images(path_to_image).save()
 
-        article_page = ArticlePage(self.browser).navigate(self.article["title"])
+        article_page = ArticlePage(self.browser).navigate(article["title"])
         images = article_page.get_all_images()
 
         self.assertEqual(len(images), 1)
-        self.assertEqual((images[0].text), "black-cat.jpg")
+        image_name = images[0].get_attribute("src").split("/")[-1]
+        self.assertRegex(image_name, "black-cat(\_.*)?\.jpg")

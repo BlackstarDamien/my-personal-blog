@@ -31,7 +31,7 @@ class AdminArticlePage(AdminBasePage):
         return self
     
     def attach_images(self, path_to_image: str) -> "AdminArticlePage":
-        file_name = self.find((By.ID, "id_image_set-0-name"))[0]
+        file_name = self.find((By.ID, "id_images-0-name"))[0]
         file_name.send_keys(path_to_image.name)
 
         file_input = self.find((By.CSS_SELECTOR, "input[type='file']"))[0]
