@@ -24,10 +24,22 @@ class AdminArticlePage(AdminBasePage):
     ADD_LOCATOR = (By.XPATH, "//a[@href='/admin/blog/article/add/']")
     ARTICLES_LOCATOR = (By.LINK_TEXT, "Articles")
 
-    def add_new_article(self, article: dict):
+    def add_new_article(self, article: dict) -> "AdminArticlePage":
         self._click_on_add_article()
         self._enter_title(article["title"])
         self._enter_content(article["content"])
+        return self
+    
+    def attach_images(self, path_to_image: str) -> "AdminArticlePage":
+        file_name = self.find((By.ID, "id_images-0-name"))[0]
+        file_name.send_keys(path_to_image.name)
+
+        file_input = self.find((By.CSS_SELECTOR, "input[type='file']"))[0]
+        file_input.send_keys(str(path_to_image))
+        
+        return self
+    
+    def save(self):
         self._click_save_button()
     
     def edit_article(self, title: str, changes: dict):
@@ -90,7 +102,7 @@ class AdminAboutMePage(AdminBasePage):
         Returns
         -------
         AdminAboutMePage
-            _description_
+            About Me section
         """
         self.find(self.ABOUT_ME_LIST_LOCATOR)[0].click()
         return self

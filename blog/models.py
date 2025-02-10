@@ -73,4 +73,8 @@ class AboutMe(Page):
         """
         self.__class__.objects.exclude(id=self.id).delete()
         return super().save(*args, **kwargs)
-    
+
+class Image(models.Model):
+    name = models.CharField(max_length=120)
+    url = models.ImageField(upload_to="images", null=True, blank=True)
+    article = models.ForeignKey(Article, related_name="images", on_delete=models.CASCADE)

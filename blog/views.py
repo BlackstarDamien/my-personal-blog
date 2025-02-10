@@ -36,7 +36,8 @@ def article_page(request: HttpRequest, slug: str) -> HttpResponse:
         Rendered Article page.
     """
     article = Article.objects.get(slug=slug)
-    context = {"article": article}
+    img_url_map = {x.name: str(x.url) for x in article.images.all()}
+    context = {"article": article, "img_url_map": img_url_map}
     return render(request, 'article.html', context)
 
 def about_me_page(request: HttpRequest) -> HttpResponse:

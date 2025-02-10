@@ -1,6 +1,7 @@
-from typing import Dict
+from typing import Dict, List
 from django.template.defaultfilters import slugify
 from selenium.webdriver.common.by import By
+from selenium.webdriver.remote.webelement import WebElement
 
 from .base_page import BasePage
 
@@ -40,6 +41,16 @@ class ArticlePage(BasePage):
             Article's content.
         """
         return self.find(self.CONTENT_LOCATOR)[0].text
+
+    def get_all_images(self) -> List[WebElement]:
+        """Returns all images from an article.
+
+        Returns
+        -------
+        List[WebElement]
+            List of images
+        """
+        return self.find((By.TAG_NAME, "img"))
 
     def to_dict(self) -> Dict[str, str]:
         """Converts Article Page to dict object.

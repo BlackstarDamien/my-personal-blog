@@ -15,6 +15,6 @@
         </h3>
     </header>
     <article class="article-content">
-        {{ article.content|md_to_html }}
+        {{ article.content|md_to_html:img_url_map }}
     </article>
 {% endblock %}
