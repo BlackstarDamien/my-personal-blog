@@ -1,0 +1,20 @@
+{
+    "name": "My Personal Blog Dev Container",
+    "build": {
+        "dockerfile": "../Dockerfile"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-azuretools.vscode-docker",
+                "github.vscode-github-actions",
+                "eamodio.gitlens"
+            ]
+        },
+        "settings": {
+            "git.path": "/usr/bin/git"
+        }
+    },
+    "onCreateCommand": "apt-get update && apt-get install -y git"
+}
