@@ -1,11 +1,17 @@
+from io import BytesIO
 from PIL import Image as PILImage
-from tempfile import gettempdir, NamedTemporaryFile
 from django.test import TestCase, override_settings
 from blog.models import Article, Image
 from pathlib import Path
 from django.core.files.images import ImageFile
 from django.conf import settings
 
+
+STORAGE_TEST_OPTIONS = {
+    "default": {
+        "BACKEND": "django.core.files.storage.InMemoryStorage"
+    }
+}
 
 class TestArticlePageView(TestCase):
     def setUp(self) -> None:
@@ -40,20 +46,19 @@ class TestArticlePageView(TestCase):
 
         self.assertInHTML(expected, str(response.content))
 
-    @override_settings(MEDIA_URL=gettempdir())
+    @override_settings(STORAGES=STORAGE_TEST_OPTIONS)
     def test_article_page_handle_images(self):
         """Tests that article page is able to display images.
         """
-        test_img = self.create_temp_image()
+        img_file_name = "test_file.jpg"
         with open(Path(__file__).parent.parent / "data/article-with-image.md") as f:
-            img_file_name = test_img.name.split("/")[-1]
             article_content = f.read().format(img_file_name=img_file_name)
 
         article = Article.objects.create(
             title="Test Article With Image",
             content=article_content
         )
-        article_image = self.create_test_image(test_img, article)
+        article_image = self.create_test_image(img_file_name, article)
         article_url = article.get_absolute_url()
         response = self.client.get(article_url)
 
@@ -61,26 +66,43 @@ class TestArticlePageView(TestCase):
         expected = f"""<img alt="" src="{image_path}">"""
         self.assertInHTML(expected, str(response.content))
 
-    def create_test_image(
-            self, 
-            test_image: NamedTemporaryFile, 
-            article: Article
-        ) -> Image:
+    def create_test_image(self, file_name: str, article: Article) -> Image:
+        """Creates instance of Image model for testing purpose.
+
+        Parameters
+        ----------
+        file_name : str
+            Name of the file
+        article : Article
+            Instance of Article that Image is attached to
+
+        Returns
+        -------
+        Image
+            Instace of Image model
+        """
+        test_image_content = self.__create_temp_img_content()
+        image_file = ImageFile(
+                file=test_image_content,
+                name=file_name
+        )
+
         article_image = Image(
-            name=test_image.name.split("/")[-1],
-            url=test_image.name.split("/")[-1],
+            name=file_name,
+            url=image_file,
             article=article
         )
         article_image.save()
+
         return article_image
     
-    def create_temp_image(self) -> NamedTemporaryFile:
-        temp_img = NamedTemporaryFile()
+    def __create_temp_img_content(self) -> BytesIO:
+        temp_img = BytesIO()
         image = PILImage.new(
             mode="RGB",
             size=(200, 200),
             color=(255, 0, 0, 0)
         )
         image.save(temp_img, "jpeg")
+        temp_img.seek(0)
         return temp_img
-    
