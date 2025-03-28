@@ -15,7 +15,7 @@ STORAGE_TEST_OPTIONS = {
 class TestArticlePageView(TestCase):
     def setUp(self) -> None:
         self.article = Article.objects.create(
-            title="Test Article 1",
+            title="Test Article",
             content="""# Test title\nTest content"""
         )
         self.article_url = self.article.get_absolute_url()
@@ -44,50 +44,27 @@ class TestArticlePageView(TestCase):
         """Tests that article page is able to display images.
         """
         img_file_name = "test_file.jpg"
-        content_with_img = f"Here's a nice picture: ![]({img_file_name})"
-        self.article.content += content_with_img
-        self.article.save()
+        self.__attach_content_with_image(img_file_name)
 
-        test_image = self.create_test_image(img_file_name)
-        self.bind_image_with_article(test_image, self.article)
+        test_image = self.__create_test_image(img_file_name)
+        self.__bind_image_with_article(test_image, self.article)
         response = self.client.get(self.article_url)
 
         image_path = settings.MEDIA_URL + str(test_image.url)
         expected = f"""<img alt="" src="{image_path}">"""
         self.assertInHTML(expected, str(response.content))
 
-    def bind_image_with_article(self, image: Image, article: Article) -> Image:
-        """Binds instance of Image model with instance of Article model.
+    def __attach_content_with_image(self, img_file_name: str):
+        content_with_img = f"Here's a nice picture: ![]({img_file_name})"
+        self.article.content += content_with_img
+        self.article.save()
 
-        Parameters
-        ----------
-        image : Image
-            Instance of Image model
-        article : Article
-            Dependant instance of Article model
-
-        Returns
-        -------
-        Image
-            Image model's object with attached Article
-        """
+    def __bind_image_with_article(self, image: Image, article: Article) -> Image:
         image.article = article
         image.save()
         return image
 
-    def create_test_image(self, file_name: str) -> Image:
-        """Creates instance of Image model for testing purpose.
-
-        Parameters
-        ----------
-        file_name : str
-            Name of the file
-
-        Returns
-        -------
-        Image
-            Instace of Image model
-        """
+    def __create_test_image(self, file_name: str) -> Image:
         test_image_content = self.__create_temp_img_content()
         image_file = ImageFile(
                 file=test_image_content,
