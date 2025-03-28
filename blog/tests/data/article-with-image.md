@@ -3,4 +3,4 @@
 ### Overview
 This article was created to display a single image. This image presents
 a little, black cat. Here's an photography of this tiny little cat:
-![]({img_file_name})
+![](black-cat.jpg)
