@@ -1,5 +1,6 @@
-import os
-from django.test import TestCase
+from PIL import Image as PILImage
+from tempfile import gettempdir, NamedTemporaryFile
+from django.test import TestCase, override_settings
 from blog.models import Article, Image
 from pathlib import Path
 from django.core.files.images import ImageFile
@@ -13,10 +14,6 @@ class TestArticlePageView(TestCase):
             content="Test Content"
         )
         self.article_url = self.article.get_absolute_url()
-    
-    def tearDown(self):
-        if os.path.exists("images/black-cat.jpg"):
-            os.remove("images/black-cat.jpg")
     
     def test_article_page_returns_correct_html(self):
         """Test that article page returns proper html file.
@@ -43,28 +40,47 @@ class TestArticlePageView(TestCase):
 
         self.assertInHTML(expected, str(response.content))
 
+    @override_settings(MEDIA_URL=gettempdir())
     def test_article_page_handle_images(self):
         """Tests that article page is able to display images.
         """
+        test_img = self.create_temp_image()
         with open(Path(__file__).parent.parent / "data/article-with-image.md") as f:
-            article_content = f.read()
+            img_file_name = test_img.name.split("/")[-1]
+            article_content = f.read().format(img_file_name=img_file_name)
 
-        article_with_images = Article.objects.create(
+        article = Article.objects.create(
             title="Test Article With Image",
             content=article_content
         )
-
-        path_to_image = Path(__file__).parents[1] / "data/black-cat.jpg"
-        with path_to_image.open(mode='rb') as f:
-            article_image = Image()
-            article_image.article = article_with_images
-            article_image.name = "black-cat.jpg"
-            article_image.url = ImageFile(f, name=path_to_image.name)
-            article_image.save()
+        article_image = self.create_test_image(test_img, article)
+        article_url = article.get_absolute_url()
+        response = self.client.get(article_url)
 
         image_path = settings.MEDIA_URL + str(article_image.url)
-        article_url = article_with_images.get_absolute_url()
-        response = self.client.get(article_url)
         expected = f"""<img alt="" src="{image_path}">"""
-
         self.assertInHTML(expected, str(response.content))
+
+    def create_test_image(
+            self, 
+            test_image: NamedTemporaryFile, 
+            article: Article
+        ) -> Image:
+        article_image = Image(
+            name=test_image.name.split("/")[-1],
+            url=test_image.name.split("/")[-1],
+            article=article
+        )
+        article_image.save()
+        return article_image
+    
+    def create_temp_image(self) -> NamedTemporaryFile:
+        temp_img = NamedTemporaryFile()
+        image = PILImage.new(
+            mode="RGB",
+            size=(200, 200),
+            color=(255, 0, 0, 0)
+        )
+        image.save(temp_img, "jpeg")
+        return temp_img
+    
