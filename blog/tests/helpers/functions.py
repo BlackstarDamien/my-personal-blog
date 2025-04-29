@@ -35,7 +35,7 @@ def create_dummy_article(data: dict) -> Article:
     return Article.objects.create(**data)
    
 
-def create_test_image(file_name: str) -> Image:
+def create_dummy_image(file_name: str) -> Image:
     """Initialize instance of Image model.
 
     Parameters
