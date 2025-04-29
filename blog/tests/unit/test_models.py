@@ -1,11 +1,12 @@
 from datetime import datetime
 from django.test import TestCase
 from django.db.utils import IntegrityError
-from blog.models import Article, AboutMe, Image
-from django.core.files.images import ImageFile
-from django.conf import settings
-from pathlib import Path
-from shutil import rmtree
+from blog.models import AboutMe
+from blog.tests.helpers import (
+    create_dummy_image,
+    create_dummy_article,
+    create_dummy_about_me
+)
 
 
 class TestArticle(TestCase):
@@ -14,7 +15,7 @@ class TestArticle(TestCase):
             "title": "Test Article",
             "content": "Test Content"
         }
-        self.article = self.create_dummy_article(self.data)
+        self.article = create_dummy_article(self.data)
     
     def test_should_create_new_article(self):
         """Tests that instance of Article is initialized correctly.
@@ -39,7 +40,7 @@ class TestArticle(TestCase):
         with the same data and slug.
         """
         with self.assertRaises(IntegrityError):
-            self.create_dummy_article(self.data)
+            create_dummy_article(self.data)
     
     def test_should_calculate_url_for_given_object(self):
         """Checks if get_absolute_url() returns correct
@@ -56,21 +57,6 @@ class TestArticle(TestCase):
         expected_date = self.article.publish_date.strftime("%Y-%m-%d")
         self.assertEqual(expected_date, current_date)
 
-    def create_dummy_article(self, data) -> Article:
-        """Initialize instance of Article based on dummy data.
-
-        Parameters
-        ----------
-        data : _type_
-            Dummy data used to create Article's object.
-
-        Returns
-        -------
-        Article
-            Dummy Article.
-        """
-        return Article.objects.create(**data)
-
 
 class TestAboutMe(TestCase):
     def setUp(self) -> None:
@@ -78,7 +64,7 @@ class TestAboutMe(TestCase):
             "title": "About Me",
             "content": "Something about me"
         }
-        self.about_me = AboutMe.objects.create(**self.data)
+        self.about_me = create_dummy_about_me(self.data)
     
     def test_should_create_new_about_me_instance(self):
         """Checks if AboutMe object is initialized correctly.
@@ -94,50 +80,27 @@ class TestAboutMe(TestCase):
             "title": "About Me",
             "content": "Something new about me"
         }
-        AboutMe.objects.create(**data)
+        create_dummy_about_me(data)
         about_me_count = AboutMe.objects.all().count()
         about_me_updated = AboutMe.objects.first()
 
         self.assertEqual(about_me_count, 1)
         self.assertEqual(about_me_updated.content, data["content"])
 
+
 class TestImage(TestCase):
     def setUp(self):
-        self.article = self.create_dummy_article(
+        self.article = create_dummy_article(
             {
                 "title": "Test Article",
                 "content": "Test Content"
             }
         )
-        rmtree(settings.MEDIA_ROOT, ignore_errors=True)
-
-    def tearDown(self):
-        rmtree(settings.MEDIA_ROOT, ignore_errors=True)
     
     def test_should_create_new_instance(self):
         """Checks if object model for Image is created properly.
         """
-        path_to_image = Path(__file__).parent.parent / "data/black-cat.jpg"
-        with path_to_image.open(mode='rb') as f:
-            image = Image.objects.create(
-                name="black-cat",
-                url=ImageFile(f, name=path_to_image.name),
-                article=self.article
-            )
-        self.assertEqual(image.name, "black-cat")
-        self.assertEqual(str(image.url).split("/")[-1], "black-cat.jpg")
-
-    def create_dummy_article(self, data) -> Article:
-        """Initialize instance of Article based on dummy data.
-
-        Parameters
-        ----------
-        data : _type_
-            Dummy data used to create Article's object.
-
-        Returns
-        -------
-        Article
-            Dummy Article.
-        """
-        return Article.objects.create(**data)
+        test_image_name = "black-cat.jpg"
+        image = create_dummy_image(test_image_name)
+        self.assertEqual(image.name, test_image_name)
+        self.assertEqual(str(image.url).split("/")[-1], test_image_name)
