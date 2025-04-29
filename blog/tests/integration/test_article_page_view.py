@@ -1,9 +1,10 @@
-from io import BytesIO
-from PIL import Image as PILImage
 from django.test import TestCase, override_settings
 from blog.models import Article, Image
-from django.core.files.images import ImageFile
 from django.conf import settings
+from blog.tests.helpers import (
+    create_dummy_image,
+    create_dummy_article
+)
 
 
 STORAGE_TEST_OPTIONS = {
@@ -14,9 +15,11 @@ STORAGE_TEST_OPTIONS = {
 
 class TestArticlePageView(TestCase):
     def setUp(self) -> None:
-        self.article = Article.objects.create(
-            title="Test Article",
-            content="""# Test title\nTest content"""
+        self.article = create_dummy_article(
+            {
+                "title": "Test Article",
+                "content": """# Test title\nTest content"""
+            }
         )
         self.article_url = self.article.get_absolute_url()
     
@@ -46,7 +49,7 @@ class TestArticlePageView(TestCase):
         img_file_name = "test_file.jpg"
         self.__attach_content_with_image(img_file_name)
 
-        test_image = self.__create_test_image(img_file_name)
+        test_image = create_dummy_image(img_file_name)
         self.__bind_image_with_article(test_image, self.article)
         response = self.client.get(self.article_url)
 
@@ -64,27 +67,3 @@ class TestArticlePageView(TestCase):
         image.save()
         return image
 
-    def __create_test_image(self, file_name: str) -> Image:
-        test_image_content = self.__create_temp_img_content()
-        image_file = ImageFile(
-                file=test_image_content,
-                name=file_name
-        )
-
-        article_image = Image(
-            name=file_name,
-            url=image_file,
-        )
-
-        return article_image
-    
-    def __create_temp_img_content(self) -> BytesIO:
-        temp_img = BytesIO()
-        image = PILImage.new(
-            mode="RGB",
-            size=(200, 200),
-            color=(255, 0, 0, 0)
-        )
-        image.save(temp_img, "jpeg")
-        temp_img.seek(0)
-        return temp_img
