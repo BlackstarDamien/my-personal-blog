@@ -1,9 +1,7 @@
 from datetime import datetime
-from typing import Dict
 from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from blog.models import AboutMe, Article
 
 
 class TestBase(LiveServerTestCase):
@@ -23,11 +21,11 @@ class TestBase(LiveServerTestCase):
             "content": "Something about me"
         }
 
-        self.admin = {
-            "username": "admin",
-            "email": "admin@admin.com",
-            "password": "adm1n"
-        }
+        self.test_articles = [
+            {"title": "Test Article 1", "content": "Test Article 1"},
+            {"title": "Test Article 2", "content": "Test Article 2"},
+            {"title": "Test Article 3", "content": "Test Article 3"}
+        ]
 
     def tearDown(self) -> None:
         self.browser.close()
@@ -44,44 +42,3 @@ class TestBase(LiveServerTestCase):
         chrome_options.add_argument("--disable-search-engine-choice-screen")
         chrome_options.add_argument("--headless")
         return webdriver.Chrome(options=chrome_options)
-
-    def create_dummy_articles(self):
-        """Creates dummy articles.
-        """
-        test_articles = [
-            {"title": "Test Article 1", "content": "Test Article 1"},
-            {"title": "Test Article 2", "content": "Test Article 2"},
-            {"title": "Test Article 3", "content": "Test Article 3"}
-        ]
-        for article in test_articles:
-            self.create_dummy_article(article)
-
-    def create_dummy_article(self, article: Dict[str, str]) -> Article:
-        """Create dummy article and returns Article's title.
-
-        Parameters
-        ----------
-        article : Dict[str, str]
-            Data used to initialize Article page's model.
-
-        Returns
-        -------
-        Article
-            Instance of created article.
-        """
-        return Article.objects.create(**article)
-
-    def create_dummy_about_me_page(self, data: Dict[str, str]) -> AboutMe:
-        """Create dummy About Me page.
-
-        Parameters
-        ----------
-        data : Dict[str, str]
-            Data used to initialize About Me page's model.
-
-        Returns
-        -------
-        AboutMe
-            Instance of AboutMe model.
-        """
-        return AboutMe.objects.create(**data)

@@ -1,11 +1,11 @@
 from blog.tests.e2e.base import TestBase
 from django.test import override_settings
 
-from blog.models import Article, Image
 from .pages.article_page import ArticlePage
 from .pages.main_page import MainPage
 from blog.tests.helpers import (
-    create_dummy_article, create_dummy_image
+    create_dummy_article, 
+    create_article_with_image
 )
 
 
@@ -61,20 +61,10 @@ class TestArticles(TestBase):
             "publish_date": "2024-10-11",
             "content": md_content 
         }
-        self.create_article_with_image(article)
+        create_article_with_image(article, "black-cat.jpg")
         article_page = ArticlePage(self.browser).navigate(article["title"])
         images = article_page.get_all_images()
 
         self.assertEqual(len(images), 1)
         image_name = images[0].get_attribute("src").split("/")[-1]
         self.assertRegex(image_name, r"black-cat(\_.*)?\.jpg")
-
-    def create_article_with_image(self, article: dict):
-        md_article = create_dummy_article(article)
-        articles_image = create_dummy_image("black-cat.jpg")
-        self.__bind_image_with_article(articles_image, md_article)
-
-    def __bind_image_with_article(self, image: Image, article: Article) -> Image:
-        image.article = article
-        image.save()
-        return image
