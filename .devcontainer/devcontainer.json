@@ -1,8 +1,8 @@
 {
     "name": "My Personal Blog Dev Container",
-    "build": {
-        "dockerfile": "../Dockerfile"
-    },
+    "dockerComposeFile": "docker-compose.dev.yml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/my-personal-blog",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -16,5 +16,6 @@
             "git.path": "/usr/bin/git"
         }
     },
-    "onCreateCommand": "apt-get update && apt-get install -y git"
+    "forwardPorts": [8080, 4444, 7900],
+    "onCreateCommand": "apt-get update && apt-get install -y git curl"
 }
