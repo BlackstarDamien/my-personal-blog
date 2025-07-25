@@ -1,13 +1,17 @@
+import os
 from datetime import datetime
 from django.test import LiveServerTestCase
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 
 
 class TestBase(LiveServerTestCase):
     def setUp(self) -> None:
         self.browser = self.__init_browser()
         self.browser.implicitly_wait(3)
+
+        if test_server := os.environ.get("APP_URL"):
+            self.live_server_url = "http://" + test_server
+
         self.browser.get(self.live_server_url)
 
         self.article = {
@@ -30,15 +34,19 @@ class TestBase(LiveServerTestCase):
     def tearDown(self) -> None:
         self.browser.close()
     
-    def __init_browser(self) -> webdriver.Chrome:
-        """Initialize webdriver object for Chrome.
+    def __init_browser(self) -> webdriver.Remote:
+        """Initialize webdriver object for Remote driver.
 
         Returns
         -------
-        webdriver.Chrome
-            Instance of Chrome webdriver.
+        webdriver.Remote
+            Instance of Remote webdriver.
         """
-        chrome_options = Options()
-        chrome_options.add_argument("--disable-search-engine-choice-screen")
-        chrome_options.add_argument("--headless")
-        return webdriver.Chrome(options=chrome_options)
+        firefox_options = webdriver.FirefoxOptions()
+        firefox_options.add_argument("--headless")
+        selenium_url = os.environ.get("SELENIUM_REMOTE_URL")
+
+        return webdriver.Remote(
+            command_executor=selenium_url,
+            options=firefox_options,
+        )
