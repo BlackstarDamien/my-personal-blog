@@ -2,7 +2,7 @@
     "name": "My Personal Blog Dev Container",
     "dockerComposeFile": "docker-compose.dev.yml",
     "service": "app",
-    "workspaceFolder": "/workspaces/my-personal-blog",
+    "workspaceFolder": "/app/",
     "customizations": {
         "vscode": {
             "extensions": [
@@ -13,7 +13,10 @@
             ]
         },
         "settings": {
-            "git.path": "/usr/bin/git"
+            "git.path": "/usr/bin/git",
+            "python.terminal.activateEnvInCurrentTerminal": true,
+            "python.defaultInterpreterPath": "/app/venv/bin/python",
+            "remote.autoForwardPorts": false
         }
     },
     "forwardPorts": [8080, 4444, 7900],

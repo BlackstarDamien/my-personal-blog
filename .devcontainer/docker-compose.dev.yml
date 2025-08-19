@@ -9,7 +9,8 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ..:/workspaces/my-personal-blog
+      - ..:/app
+      - data:/app/venv
     depends_on:
       - selenium
     networks:
@@ -32,3 +33,7 @@ services:
 networks:
   dev-net:
     driver: bridge
+
+volumes:
+  data:
+  

@@ -16,6 +16,7 @@ RUN pip install --upgrade pip && \
 
 FROM deps-builder AS static-builder
 
+WORKDIR /app
 COPY . .
 RUN python manage.py collectstatic --noinput
 
@@ -24,12 +25,11 @@ FROM python:3.11-slim-bullseye AS development
 
 ENV PYTHONBUFFERED=1
 
-COPY --from=deps-builder /venv /venv
-ENV PATH="/venv/bin:$PATH"
-
 WORKDIR /app
+COPY --from=deps-builder /venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
+
 COPY --from=static-builder /app .
-COPY --from=static-builder /app/static /app/static
 
 RUN python manage.py migrate
 
