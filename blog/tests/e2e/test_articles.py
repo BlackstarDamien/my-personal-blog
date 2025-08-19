@@ -17,12 +17,26 @@ STORAGE_TEST_OPTIONS = {
 
 
 class TestArticles(TestBase):
+    @classmethod
+    def setUpTestData(cls):
+        with open("blog/tests/fixtures/markdown/lorem_ipsum.md", "r") as f:
+            cls.lorem_md_content = f.read()
+
+        cls.article_test = create_dummy_article(
+            {
+                "title": "Lorem Ipsum",
+                "publish_date": "2024-10-11",
+                "content": cls.lorem_md_content
+            }
+        )
+        
     def setUp(self) -> None:
         super().setUp()
     
     def test_display_article(self):
         """Tests created articles is displayed under it's own URL.
         """
+        print(self.article_test)
         create_dummy_article(self.article)
         main_page = MainPage(self.browser).navigate()
         self.assertTrue(main_page.is_article_visible(self.article["title"]))
