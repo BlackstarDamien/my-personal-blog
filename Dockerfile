@@ -6,8 +6,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-RUN python -m venv /venv
-ENV PATH="/venv/bin:$PATH"
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt .
 RUN pip install --upgrade pip && \
@@ -26,11 +26,13 @@ FROM python:3.11-slim-bullseye AS development
 ENV PYTHONBUFFERED=1
 
 WORKDIR /app
-COPY --from=deps-builder /venv /app/venv
-ENV PATH="/app/venv/bin:$PATH"
+COPY --from=deps-builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
 COPY --from=static-builder /app .
 
 RUN python manage.py migrate
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8080"]
+EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
