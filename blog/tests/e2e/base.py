@@ -1,17 +1,28 @@
 import os
 from datetime import datetime
 from django.test import LiveServerTestCase
-from selenium import webdriver
+from selenium.webdriver import DesiredCapabilities
+from testcontainers.selenium import BrowserWebDriverContainer
 
 
 class TestBase(LiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.port = int(os.environ.get("TEST_PORT", cls.port))
+        cls.live_server_uri = "http://web:{}".format(cls.port)
+        super(TestBase, cls).setUpClass()
+
     def setUp(self) -> None:
-        self.browser = self.__init_browser()
+        self.browser_container = BrowserWebDriverContainer(
+            DesiredCapabilities.CHROME
+        )
+        self.browser_container.start()
+
+        self.browser = self.browser_container.get_driver()
         self.browser.implicitly_wait(3)
-
-        if test_server := os.environ.get("APP_URL"):
-            self.live_server_url = "http://" + test_server
-
+        
+        server_host = os.environ.get("TEST_HOST", "host.docker.internal")
+        self.live_server_url = f'http://{server_host}:{self.port}/'
         self.browser.get(self.live_server_url)
 
         self.article = {
@@ -33,20 +44,4 @@ class TestBase(LiveServerTestCase):
 
     def tearDown(self) -> None:
         self.browser.close()
-    
-    def __init_browser(self) -> webdriver.Remote:
-        """Initialize webdriver object for Remote driver.
-
-        Returns
-        -------
-        webdriver.Remote
-            Instance of Remote webdriver.
-        """
-        firefox_options = webdriver.FirefoxOptions()
-        firefox_options.add_argument("--headless")
-        selenium_url = os.environ.get("SELENIUM_REMOTE_URL")
-
-        return webdriver.Remote(
-            command_executor=selenium_url,
-            options=firefox_options,
-        )
+        self.browser_container.stop()
