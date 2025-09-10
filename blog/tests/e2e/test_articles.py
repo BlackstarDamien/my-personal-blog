@@ -36,7 +36,6 @@ class TestArticles(TestBase):
     def test_display_article(self):
         """Tests created articles is displayed under it's own URL.
         """
-        print(self.article_test)
         create_dummy_article(self.article)
         main_page = MainPage(self.browser).navigate()
         self.assertTrue(main_page.is_article_visible(self.article["title"]))
