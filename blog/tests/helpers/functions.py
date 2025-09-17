@@ -25,6 +25,9 @@ def create_dummy_articles(test_articles: List[dict]):
     """
     for article in test_articles:
         create_dummy_article(article)
+    
+    # TODO: Remove
+    print(Article.objects.all())
 
 def create_dummy_article(data: dict) -> Article:
     """Initialize instance of Article based on dummy data.
