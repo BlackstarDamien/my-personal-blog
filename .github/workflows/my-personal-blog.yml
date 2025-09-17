@@ -10,8 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
-      TEST_HOST: host.docker.internal
+      TESTCONTAINERS_HOST_OVERRIDE: localhost
+      TEST_HOST: localhost
       TEST_PORT: 8001
 
     steps:
