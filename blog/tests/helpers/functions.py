@@ -20,14 +20,18 @@ def create_dummy_about_me(data: dict) -> AboutMe:
     """
     return AboutMe.objects.create(**data)
 
-def create_dummy_articles(test_articles: List[dict]):
+def create_dummy_articles(test_articles: List[dict]) -> List[Article]:
     """Creates dummy articles.
     """
+    articles_to_create = []
     for article in test_articles:
-        create_dummy_article(article)
+        articles_to_create.append(create_dummy_article(article))
     
-    # TODO: Remove
-    print(Article.objects.all())
+    return Article.objects.bulk_create(articles_to_create)
+    
+    # # TODO: Remove
+    # Article.objects.bulk_create
+    # print(Article.objects.all())
 
 def create_dummy_article(data: dict) -> Article:
     """Initialize instance of Article based on dummy data.

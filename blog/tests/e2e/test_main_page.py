@@ -10,7 +10,7 @@ class TestMainPage(TestBase):
             {"title": "Test Article 2", "content": "Test Article 2"},
             {"title": "Test Article 3", "content": "Test Article 3"}
         ]
-        create_dummy_articles(test_articles)
+        cls.articles = create_dummy_articles(test_articles)
 
     def test_displays_list_of_articles(self):
         """Tests that main page displays list of existing articles.
