@@ -11,6 +11,7 @@ class TestMainPage(TestBase):
             {"title": "Test Article 3", "content": "Test Article 3"}
         ]
         cls.articles = create_dummy_articles(test_articles)
+        print(cls.articles[0].objects.all())
 
     def test_displays_list_of_articles(self):
         """Tests that main page displays list of existing articles.

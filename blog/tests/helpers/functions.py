@@ -30,7 +30,6 @@ def create_dummy_articles(test_articles: List[dict]) -> List[Article]:
     return Article.objects.bulk_create(articles_to_create)
     
     # # TODO: Remove
-    # Article.objects.bulk_create
     # print(Article.objects.all())
 
 def create_dummy_article(data: dict) -> Article:
