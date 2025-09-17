@@ -9,6 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: python:3.11-slim-bullseye 
+      ports:
+        - 8081
     env:
       TESTCONTAINERS_HOST_OVERRIDE: localhost
       TEST_HOST: localhost
