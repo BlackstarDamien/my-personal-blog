@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TEST_PORT: 8001
 
     steps:
     - uses: actions/checkout@v3
@@ -22,6 +24,7 @@ jobs:
         pip install -r requirements.txt
     - name: Run e2e tests
       run: |
+        python manage.py runserver 0.0.0.0:8001
         make e2e
     - name: Run integration tests
       run: |
