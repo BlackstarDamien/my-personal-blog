@@ -4,8 +4,6 @@ from django.test import LiveServerTestCase
 from selenium.webdriver import DesiredCapabilities
 from testcontainers.selenium import BrowserWebDriverContainer
 
-# from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-
 
 class TestBase(LiveServerTestCase):
     @classmethod

@@ -3,7 +3,6 @@ from PIL import Image as PILImage
 from typing import List
 from blog.models import AboutMe, Article, Image
 from django.core.files.images import ImageFile
-from django.db import transaction
 
 
 def create_dummy_about_me(data: dict) -> AboutMe:
@@ -30,7 +29,6 @@ def create_dummy_articles(test_articles: List[dict]):
         create_dummy_article(article)
     
     # Article.objects.bulk_create(articles_to_create)
-    transaction.commit()
     # TODO: Remove
     print(Article.objects.all())
 
