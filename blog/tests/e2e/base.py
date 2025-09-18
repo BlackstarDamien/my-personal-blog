@@ -8,11 +8,11 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 
 class TestBase(StaticLiveServerTestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.port = int(os.environ.get("TEST_PORT", cls.port))
-        cls.live_server_uri = "http://web:{}".format(cls.port)
-        super(TestBase, cls).setUpClass()
+    # @classmethod
+    # def setUpClass(cls):
+    #     cls.port = int(os.environ.get("TEST_PORT", cls.port))
+    #     cls.live_server_uri = "http://web:{}".format(cls.port)
+    #     super(TestBase, cls).setUpClass()
 
     def setUp(self) -> None:
         self.browser_container = BrowserWebDriverContainer(
@@ -23,8 +23,8 @@ class TestBase(StaticLiveServerTestCase):
         self.browser = self.browser_container.get_driver()
         self.browser.implicitly_wait(3)
 
-        server_host = os.environ.get("TEST_HOST", "host.docker.internal")
-        self.live_server_url = f'http://{server_host}:{self.port}/'    
+        # server_host = os.environ.get("TEST_HOST", "host.docker.internal")
+        # self.live_server_url = f'http://{server_host}:{self.port}/'    
         self.browser.get(self.live_server_url)
 
         self.article = {
