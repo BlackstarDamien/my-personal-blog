@@ -4,8 +4,10 @@ from django.test import LiveServerTestCase
 from selenium.webdriver import DesiredCapabilities
 from testcontainers.selenium import BrowserWebDriverContainer
 
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
-class TestBase(LiveServerTestCase):
+
+class TestBase(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
         cls.port = int(os.environ.get("TEST_PORT", cls.port))
