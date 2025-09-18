@@ -45,7 +45,9 @@ def create_dummy_article(data: dict) -> Article:
     Article
         Dummy Article object.
     """
-    return Article.objects.create(**data)
+    article = Article.objects.create(**data)
+    article.save()
+    return article
    
 
 def create_dummy_image(file_name: str) -> Image:
