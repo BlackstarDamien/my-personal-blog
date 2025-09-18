@@ -23,11 +23,12 @@ def create_dummy_about_me(data: dict) -> AboutMe:
 def create_dummy_articles(test_articles: List[dict]):
     """Creates dummy articles.
     """
-    articles_to_create = []
+    # articles_to_create = []
     for article in test_articles:
-        articles_to_create.append(Article(**article))
+        # articles_to_create.append(Article(**article))
+        create_dummy_article(article)
     
-    Article.objects.bulk_create(articles_to_create)
+    # Article.objects.bulk_create(articles_to_create)
     
     # TODO: Remove
     print(Article.objects.all())

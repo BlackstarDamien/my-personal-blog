@@ -24,11 +24,7 @@ class TestBase(StaticLiveServerTestCase):
         self.browser.implicitly_wait(3)
 
         server_host = os.environ.get("TEST_HOST", "host.docker.internal")
-        self.live_server_url = f'http://{server_host}:{self.port}/'
-        
-        # #TODO: Remove it
-        print(f"DEBUG: {self.live_server_url}")
-        
+        self.live_server_url = f'http://{server_host}:{self.port}/'    
         self.browser.get(self.live_server_url)
 
         self.article = {
