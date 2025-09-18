@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TEST_HOST: "localhost"
 
     steps:
     - uses: actions/checkout@v3
@@ -28,6 +30,7 @@ jobs:
         make generate-static
     - name: Run e2e tests
       run: |
+        echo $TEST_HOST
         make e2e
     - name: Run integration tests
       run: |
