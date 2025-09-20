@@ -6,9 +6,13 @@ class TestMainPage(TestBase):
     @classmethod
     def setUpTestData(cls):
         cls.test_article = create_dummy_article(
-            {"title": "Test Article 1", "content": "Test Article 1"}
+            {
+                "title": "Test Article 1", 
+                "content": "Test Article 1",
+                "publish_date": "2024-10-11",
+            }
         )
-        
+
     def test_displays_list_of_articles(self):
         """Tests that main page displays list of existing articles.
         """
