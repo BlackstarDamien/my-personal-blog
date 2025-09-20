@@ -9,20 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    services:
-      docker:
-        image: docker:24-dind
-        ports:
-          - 2375:2375
-        options: >-
-          --name job-dind --privileged --shm-size=2g
     env:
-      DOCKER_HOST: tcp://localhost:2375
-      DOCKER_TLS_VERIFY: "0"
       TEST_HOST: "host.docker.internal"
       TEST_PORT: "8001"
       TESTCONTAINERS_HOST_OVERRIDE: "host.docker.internal"
-      TESTCONTAINERS_RYUK_DISABLED: "false"
+      TESTCONTAINERS_RYUK_DISABLED: "true"
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
