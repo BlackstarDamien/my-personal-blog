@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      TEST_HOST: "host.docker.internal"
+      TEST_HOST: "0.0.0.0"
       TEST_PORT: "8001"
 
     steps:
@@ -38,4 +38,3 @@ jobs:
     - name: Run unit tests
       run: |
         make unit
-        
