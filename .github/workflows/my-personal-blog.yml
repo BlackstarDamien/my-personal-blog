@@ -12,8 +12,7 @@ jobs:
     env:
       TEST_HOST: "host.docker.internal"
       TEST_PORT: "8001"
-      TESTCONTAINERS_HOST_OVERRIDE: "host.docker.internal"
-      TESTCONTAINERS_RYUK_DISABLED: "true"
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
