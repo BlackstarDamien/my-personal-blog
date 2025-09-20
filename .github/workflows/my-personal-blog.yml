@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TEST_HOST: "0.0.0.0"
-      TEST_PORT: "8001"
 
     steps:
     - uses: actions/checkout@v3
