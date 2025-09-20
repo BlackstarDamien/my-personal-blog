@@ -38,11 +38,20 @@ jobs:
 
     - name: Wait for Docker daemon
       run: |
+        # force the docker client to use the dind TCP socket and avoid TLS cert lookups
+        export DOCKER_HOST="tcp://localhost:2375"
+        export DOCKER_TLS_VERIFY="0"
+        # ensure no cert path is picked up by the client
+        unset DOCKER_CERT_PATH || true
+        export DOCKER_CERT_PATH=""
+        mkdir -p "$HOME/.docker" || true
+
         # wait up to 60s for the dind docker daemon to be ready
         for i in $(seq 1 60); do
           docker version >/dev/null 2>&1 && break || sleep 1
         done
         docker info
+      shell: bash
 
     - name: Cleanup leftover testcontainers containers (safe)
       run: |
