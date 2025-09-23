@@ -24,7 +24,8 @@ def create_dummy_articles(test_articles: List[dict]):
     """Creates dummy articles.
     """
     return Article.objects.bulk_create(
-        [Article(**article) for article in test_articles]
+        [Article(**article) for article in test_articles],
+        ignore_conflicts=True
     )
     # for article in test_articles:
     #     create_dummy_article(article)
