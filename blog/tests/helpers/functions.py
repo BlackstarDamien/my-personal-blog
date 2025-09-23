@@ -23,8 +23,11 @@ def create_dummy_about_me(data: dict) -> AboutMe:
 def create_dummy_articles(test_articles: List[dict]):
     """Creates dummy articles.
     """
-    for article in test_articles:
-        create_dummy_article(article)
+    return Article.objects.bulk_create(
+        [Article(**article) for article in test_articles]
+    )
+    # for article in test_articles:
+    #     create_dummy_article(article)
 
 def create_dummy_article(data: dict) -> Article:
     """Initialize instance of Article based on dummy data.
