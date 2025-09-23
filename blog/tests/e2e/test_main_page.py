@@ -4,6 +4,7 @@ from blog.tests.helpers import create_dummy_articles, create_dummy_article
 
 class TestMainPage(TestBase):
     def setUp(self):
+        super().setUp()
         create_dummy_article(
             {
                 "title": "Test Article 1", 
