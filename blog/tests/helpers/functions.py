@@ -39,9 +39,7 @@ def create_dummy_article(data: dict) -> Article:
     Article
         Dummy Article object.
     """
-    article = Article.objects.create(**data)
-    article.save()
-    return article
+    return Article.objects.create(**data)
    
 
 def create_dummy_image(file_name: str) -> Image:
