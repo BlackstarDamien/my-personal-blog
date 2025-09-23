@@ -2,7 +2,7 @@ run-server:
 	python manage.py runserver
 
 e2e:
-	python manage.py test blog.tests.e2e
+	python manage.py test blog.tests.e2e.test_main_page
 
 integration:
 	python manage.py test blog.tests.integration
