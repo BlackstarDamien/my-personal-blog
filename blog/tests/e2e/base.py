@@ -25,6 +25,8 @@ class TestBase(LiveServerTestCase):
         self.live_server_url = f'http://{server_host}:{self.port}/'    
         self.browser.get(self.live_server_url)
 
+        self.serialized_rollback = True
+
         self.article = {
             "title": "Test Article",
             "publish_date": datetime.now().strftime("%Y-%m-%d"),
