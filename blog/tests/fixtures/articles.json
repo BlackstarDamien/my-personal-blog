@@ -4,7 +4,8 @@
     "pk": 1,
     "fields": {
         "title": "Test Article 1", 
-        "content": "Test Article 1"
+        "content": "Test Article 1",
+        "publish_date": "2025-09-01"
     }
   },
   {
@@ -12,7 +13,8 @@
     "pk": 2,
     "fields": {
         "title": "Test Article 2", 
-        "content": "Test Article 2"
+        "content": "Test Article 2",
+        "publish_date": "2025-09-01"
     }
   }
 ]
