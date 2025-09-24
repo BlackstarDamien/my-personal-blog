@@ -39,9 +39,9 @@ class TestBase(LiveServerTestCase):
         }
 
         self.test_articles = [
-            {"title": "Test Article 1", "content": "Test Article 1"},
-            {"title": "Test Article 2", "content": "Test Article 2"},
-            {"title": "Test Article 3", "content": "Test Article 3"}
+            {"title": "Test Article 1", "content": "Test Article 1", "slug": "test-article-1"},
+            {"title": "Test Article 2", "content": "Test Article 2", "slug": "test-article-2"},
+            {"title": "Test Article 3", "content": "Test Article 3", "slug": "test-article-3"}
         ]
 
     def tearDown(self) -> None:
