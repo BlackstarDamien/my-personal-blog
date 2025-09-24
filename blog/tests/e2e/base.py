@@ -21,8 +21,8 @@ class TestBase(LiveServerTestCase):
         self.browser = self.browser_container.get_driver()
         self.browser.implicitly_wait(3)
 
-        server_host = os.environ.get("TEST_HOST", "host.docker.internal")
-        self.live_server_url = f'http://{server_host}:{self.port}/'    
+        # server_host = os.environ.get("TEST_HOST", "host.docker.internal")
+        # self.live_server_url = f'http://{server_host}:{self.port}/'
         print(self.live_server_url)
         self.browser.get(self.live_server_url)
 
