@@ -43,7 +43,6 @@ class Article(Page):
             Created or updated instance of Article.
         """
         if not self.slug or self.slug == '':
-            print(slugify(self.title))
             self.slug = slugify(self.title)    
         return super().save(*args, **kwargs)
 
