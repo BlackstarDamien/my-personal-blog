@@ -31,7 +31,7 @@ jobs:
         make generate-static
     - name: Run e2e tests
       run: |
-        docker network ls & make e2e & docker ps
+        docker network ls & make e2e
     - name: Run integration tests
       run: |
         make integration
