@@ -1,0 +1,18 @@
+[
+  {
+    "model": "blog.Article",
+    "pk": 1,
+    "fields": {
+        "title": "Test Article 1", 
+        "content": "Test Article 1"
+    }
+  },
+  {
+    "model": "blog.Article",
+    "pk": 2,
+    "fields": {
+        "title": "Test Article 2", 
+        "content": "Test Article 2"
+    }
+  }
+]
