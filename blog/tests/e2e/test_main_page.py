@@ -11,7 +11,7 @@ class TestMainPage(TestBase):
     def test_displays_list_of_articles(self):
         """Tests that main page displays list of existing articles.
         """
-        # create_dummy_articles(self.test_articles)
+        create_dummy_articles(self.test_articles)
         main_page = MainPage(self.browser).navigate()
         articles = main_page.fetch_articles()
 
