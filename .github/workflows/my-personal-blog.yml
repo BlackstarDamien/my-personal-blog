@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TEST_PORT: "8001"
-      TEST_HOST: "localhost"
+      TEST_HOST: "host.testcontainers.internal"
 
     steps:
     - uses: actions/checkout@v3

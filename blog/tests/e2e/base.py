@@ -15,7 +15,7 @@ class TestBase(LiveServerTestCase):
 
     def setUp(self) -> None:
         self.browser_container = BrowserWebDriverContainer(
-            DesiredCapabilities.FIREFOX
+            DesiredCapabilities.CHROME
         )
         self.browser_container.start()
 
