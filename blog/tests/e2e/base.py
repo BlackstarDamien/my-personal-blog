@@ -8,25 +8,25 @@ from testcontainers.selenium import BrowserWebDriverContainer
 class TestBase(LiveServerTestCase):
     @classmethod
     def setUpClass(cls):
-        cls.port = int(os.environ.get("TEST_PORT", cls.port))
+        # cls.port = int(os.environ.get("TEST_PORT", cls.port))
+        cls.port = 8081
         cls.live_server_uri = "http://web:{}".format(cls.port)
         super(TestBase, cls).setUpClass()
 
     def setUp(self) -> None:
         self.browser_container = BrowserWebDriverContainer(
             DesiredCapabilities.CHROME
-        )
+        ).with_network_aliases("host")
+
         self.browser_container.start()
 
         self.browser = self.browser_container.get_driver()
         self.browser.implicitly_wait(3)
 
-        # server_host = os.environ.get("TEST_HOST", "host.docker.internal")
-        # self.live_server_url = f'http://{server_host}:{self.port}/'
+        server_host = os.environ.get("TEST_HOST", "host.docker.internal")
+        self.live_server_url = f'http://{server_host}:{self.port}/'
         print(self.live_server_url)
         self.browser.get(self.live_server_url)
-
-        self.serialized_rollback = True
 
         self.article = {
             "title": "Test Article",

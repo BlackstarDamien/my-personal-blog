@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TEST_PORT: "8001"
+      TEST_HOST: "host.docker.internal"
 
     steps:
     - uses: actions/checkout@v3

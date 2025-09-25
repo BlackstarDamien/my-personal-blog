@@ -3,8 +3,6 @@ from .pages.main_page import MainPage
 from blog.tests.helpers import create_dummy_articles
 
 class TestMainPage(TestBase):
-    # fixtures = ["articles.json"]
-
     def setUp(self):
         super().setUp()
         create_dummy_articles(self.test_articles)
