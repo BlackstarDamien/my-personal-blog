@@ -16,8 +16,8 @@ class TestBase(LiveServerTestCase):
     def setUp(self) -> None:
         self.browser_container = BrowserWebDriverContainer(
             DesiredCapabilities.CHROME
-        ).with_network_aliases("host")
-
+        )
+        print(self.browser_container.get_container_host_ip())
         self.browser_container.start()
 
         self.browser = self.browser_container.get_driver()
