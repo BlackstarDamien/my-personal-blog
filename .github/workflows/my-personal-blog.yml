@@ -6,35 +6,49 @@ on:
   pull_request:
     branches: [ "main" ]
 
+# Try to run your steps inside container. create the same env like in devcontainer
+# if docker is a part of your development, why are you trying to use non-docker setup?
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      build: ./Dockerfile
+      context: .
+      target: development
     env:
+      TESTCONTAINERS_HOST_OVERRIDE: host.testcontainers.internal
+      TEST_HOST: host.testcontainers.internal
       TEST_PORT: "8001"
-      TEST_HOST: "host.testcontainers.internal"
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
+        python-version: "3.x"
+
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+
     - name: Run migration
       run: |
         make migrate
+
     - name: Collect static files
       run: |
         make generate-static
+
     - name: Run e2e tests
       run: |
         make e2e
+
     - name: Run integration tests
       run: |
         make integration
+
     - name: Run unit tests
       run: |
         make unit
