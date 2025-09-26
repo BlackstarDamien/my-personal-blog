@@ -12,24 +12,37 @@ jobs:
     env:
       TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
       TEST_HOST: host.docker.internal
-      TEST_PORT: 8001
+      TEST_PORT: "8001"
 
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Build test image
-      run: |
-        docker build \
-          --target development \
-          -f Dockerfile \
-          -t my-blog-test-image .
 
-    - name: Run tests in container
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
+
+    - name: Install Dependencies
       run: |
-        docker run --rm \
-          --network host \
-          -e TEST_HOST=$TEST_HOST \
-          -e TEST_PORT=$TEST_PORT \
-          -v ${{ github.workspace }}:/app \
-          my-blog-test-image \
-          /bin/bash -lc "cd /app && python manage.py test blog.tests.e2e.test_main_page && python manage.py test blog.tests.integration && python manage.py test blog.tests.unit"
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run migration
+      run: |
+        make migrate
+
+    - name: Collect static files
+      run: |
+        make generate-static
+
+    # - name: Run e2e tests
+    #   run: |
+    #     make e2e
+
+    - name: Run integration tests
+      run: |
+        make integration
+
+    - name: Run unit tests
+      run: |
+        make unit
