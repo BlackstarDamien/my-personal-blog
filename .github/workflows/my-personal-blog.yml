@@ -6,19 +6,19 @@ on:
   pull_request:
     branches: [ "main" ]
 
-# Try to run your steps inside container. create the same env like in devcontainer
-# if docker is a part of your development, why are you trying to use non-docker setup?
 jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      build: ./Dockerfile
-      context: .
-      target: development
-    env:
-      TESTCONTAINERS_HOST_OVERRIDE: host.testcontainers.internal
-      TEST_HOST: host.testcontainers.internal
-      TEST_PORT: "8001"
+      image: python:3.11-slim-bullseye
+      env:
+        TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
+        TEST_HOST: host.docker.internal
+        TEST_PORT: "8001"
+      ports:
+        - 8000
+        - 8001
+      options: --network=host
 
     steps:
     - uses: actions/checkout@v4

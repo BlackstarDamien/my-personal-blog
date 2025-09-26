@@ -8,8 +8,7 @@ from testcontainers.selenium import BrowserWebDriverContainer
 class TestBase(LiveServerTestCase):
     @classmethod
     def setUpClass(cls):
-        # cls.port = int(os.environ.get("TEST_PORT", cls.port))
-        cls.port = 8081
+        cls.port = int(os.environ.get("TEST_PORT", cls.port))
         cls.live_server_uri = "http://web:{}".format(cls.port)
         super(TestBase, cls).setUpClass()
 
