@@ -23,10 +23,6 @@ class TestBase(LiveServerTestCase):
 
         server_host = os.environ.get("TEST_HOST", "host.docker.internal")
         self.live_server_url = f'http://{server_host}:{self.port}/'
-
-        print(self.live_server_url)
-        print(self.browser_container.get_container_host_ip())
-
         self.browser.get(self.live_server_url)
 
         self.article = {
