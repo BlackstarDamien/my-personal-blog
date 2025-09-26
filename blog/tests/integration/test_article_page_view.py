@@ -1,22 +1,27 @@
-import os
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from blog.models import Article, Image
-from pathlib import Path
-from django.core.files.images import ImageFile
 from django.conf import settings
+from blog.tests.helpers import (
+    create_dummy_image,
+    create_dummy_article
+)
 
+
+STORAGE_TEST_OPTIONS = {
+    "default": {
+        "BACKEND": "django.core.files.storage.InMemoryStorage"
+    }
+}
 
 class TestArticlePageView(TestCase):
     def setUp(self) -> None:
-        self.article = Article.objects.create(
-            title="Test Article 1",
-            content="Test Content"
+        self.article = create_dummy_article(
+            {
+                "title": "Test Article",
+                "content": """# Test title\nTest content"""
+            }
         )
         self.article_url = self.article.get_absolute_url()
-    
-    def tearDown(self):
-        if os.path.exists("images/black-cat.jpg"):
-            os.remove("images/black-cat.jpg")
     
     def test_article_page_returns_correct_html(self):
         """Test that article page returns proper html file.
@@ -32,39 +37,33 @@ class TestArticlePageView(TestCase):
 
     def test_article_page_handle_markdown_content(self):
         """Tests that article page properly converts Markdown format."""
-        md_article = Article.objects.create(
-            title="Test Article MD",
-            content="""# Test title\nTest content"""
-        )
-
-        md_article_url = md_article.get_absolute_url()
-        response = self.client.get(md_article_url)
+        response = self.client.get(self.article_url)
         expected = """<h1>Test title</h1>\n<p>Test content</p>"""
 
         self.assertInHTML(expected, str(response.content))
 
+    @override_settings(STORAGES=STORAGE_TEST_OPTIONS)
     def test_article_page_handle_images(self):
         """Tests that article page is able to display images.
         """
-        with open(Path(__file__).parent.parent / "data/article-with-image.md") as f:
-            article_content = f.read()
+        img_file_name = "test_file.jpg"
+        self.__attach_content_with_image(img_file_name)
 
-        article_with_images = Article.objects.create(
-            title="Test Article With Image",
-            content=article_content
-        )
+        test_image = create_dummy_image(img_file_name)
+        self.__bind_image_with_article(test_image, self.article)
+        response = self.client.get(self.article_url)
 
-        path_to_image = Path(__file__).parents[1] / "data/black-cat.jpg"
-        with path_to_image.open(mode='rb') as f:
-            article_image = Image()
-            article_image.article = article_with_images
-            article_image.name = "black-cat.jpg"
-            article_image.url = ImageFile(f, name=path_to_image.name)
-            article_image.save()
-
-        image_path = settings.MEDIA_URL + str(article_image.url)
-        article_url = article_with_images.get_absolute_url()
-        response = self.client.get(article_url)
+        image_path = settings.MEDIA_URL + str(test_image.url)
         expected = f"""<img alt="" src="{image_path}">"""
-
         self.assertInHTML(expected, str(response.content))
+
+    def __attach_content_with_image(self, img_file_name: str):
+        content_with_img = f"Here's a nice picture: ![]({img_file_name})"
+        self.article.content += content_with_img
+        self.article.save()
+
+    def __bind_image_with_article(self, image: Image, article: Article) -> Image:
+        image.article = article
+        image.save()
+        return image
+

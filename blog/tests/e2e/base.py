@@ -1,20 +1,29 @@
+import os
 from datetime import datetime
-from typing import Dict
 from django.test import LiveServerTestCase
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from django.contrib.auth.models import User
-from blog.models import AboutMe, Article
-from shutil import rmtree
-from django.conf import settings
+from selenium.webdriver import DesiredCapabilities
+from testcontainers.selenium import BrowserWebDriverContainer
 
 
 class TestBase(LiveServerTestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.port = int(os.environ.get("TEST_PORT", cls.port))
+        cls.live_server_uri = "http://web:{}".format(cls.port)
+        super(TestBase, cls).setUpClass()
+
     def setUp(self) -> None:
-        self.browser = self.__init_browser()
+        self.browser_container = BrowserWebDriverContainer(
+            DesiredCapabilities.CHROME
+        )
+        self.browser_container.start()
+
+        self.browser = self.browser_container.get_driver()
         self.browser.implicitly_wait(3)
+
+        server_host = os.environ.get("TEST_HOST", "host.docker.internal")
+        self.live_server_url = f'http://{server_host}:{self.port}/'
         self.browser.get(self.live_server_url)
-        rmtree(settings.MEDIA_ROOT, ignore_errors=True)
 
         self.article = {
             "title": "Test Article",
@@ -27,72 +36,12 @@ class TestBase(LiveServerTestCase):
             "content": "Something about me"
         }
 
-        self.admin = {
-            "username": "admin",
-            "email": "admin@admin.com",
-            "password": "adm1n"
-        }
+        self.test_articles = [
+            {"title": "Test Article 1", "content": "Test Article 1", "slug": "test-article-1"},
+            {"title": "Test Article 2", "content": "Test Article 2", "slug": "test-article-2"},
+            {"title": "Test Article 3", "content": "Test Article 3", "slug": "test-article-3"}
+        ]
 
     def tearDown(self) -> None:
         self.browser.close()
-        rmtree(settings.MEDIA_ROOT, ignore_errors=True)
-    
-    def __init_browser(self) -> webdriver.Chrome:
-        """Initialize webdriver object for Chrome.
-
-        Returns
-        -------
-        webdriver.Chrome
-            Instance of Chrome webdriver.
-        """
-        chrome_options = Options()
-        chrome_options.add_argument("--disable-search-engine-choice-screen")
-        chrome_options.add_argument("--headless")
-        return webdriver.Chrome(options=chrome_options)
-
-    def create_dummy_articles(self):
-        """Creates dummy articles.
-        """
-        test_articles = [
-            {"title": "Test Article 1", "content": "Test Article 1"},
-            {"title": "Test Article 2", "content": "Test Article 2"},
-            {"title": "Test Article 3", "content": "Test Article 3"}
-        ]
-        for article in test_articles:
-            self.create_dummy_article(article)
-
-    def create_dummy_article(self, article: Dict[str, str]) -> Article:
-        """Create dummy article and returns Article's title.
-
-        Parameters
-        ----------
-        article : Dict[str, str]
-            Data used to initialize Article page's model.
-
-        Returns
-        -------
-        Article
-            Instance of created article.
-        """
-        return Article.objects.create(**article)
-
-    def create_dummy_about_me_page(self, data: Dict[str, str]) -> AboutMe:
-        """Create dummy About Me page.
-
-        Parameters
-        ----------
-        data : Dict[str, str]
-            Data used to initialize About Me page's model.
-
-        Returns
-        -------
-        AboutMe
-            Instance of AboutMe model.
-        """
-        return AboutMe.objects.create(**data)
-
-    def create_dummy_admin_user(self):
-        """Create Admin user for testing purposes.
-        """
-        User.objects.create_superuser(**self.admin)
-    
+        self.browser_container.stop()

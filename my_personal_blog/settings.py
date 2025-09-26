@@ -25,8 +25,7 @@ SECRET_KEY = 'django-insecure-!yl@z8n%gb3n*y51a4%vp+xieds3sja2ggw5w)6yp$gz4vm4qp
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -77,7 +76,7 @@ WSGI_APPLICATION = 'my_personal_blog.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3'
     }
 }
 
@@ -126,3 +125,6 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+FIXTURE_DIRS = [
+    os.path.join(BASE_DIR, "blog", "tests", "fixtures")
+]

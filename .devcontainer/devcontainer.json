@@ -1,8 +1,20 @@
 {
     "name": "My Personal Blog Dev Container",
     "build": {
-        "dockerfile": "../Dockerfile"
+        "dockerfile": "../Dockerfile",
+        "target": "development",
+        "options": ["--network=host"]
     },
+    "containerEnv": {
+        "TESTCONTAINERS_HOST_OVERRIDE": "host.docker.internal",
+        "TEST_HOST": "host.docker.internal",
+        "TEST_PORT": "8001"
+    },
+    "workspaceFolder": "/app",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind",
+    "features": {
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
+	},
     "customizations": {
         "vscode": {
             "extensions": [
@@ -10,11 +22,15 @@
                 "ms-azuretools.vscode-docker",
                 "github.vscode-github-actions",
                 "eamodio.gitlens"
-            ]
-        },
-        "settings": {
-            "git.path": "/usr/bin/git"
+            ],
+            "settings": {
+                "git.path": "/usr/bin/git",
+                "python.defaultInterpreterPath": "/opt/venv/bin/python",
+                "remote.autoForwardPorts": false
+            }
         }
     },
-    "onCreateCommand": "apt-get update && apt-get install -y git"
+    "runArgs": ["--network=host"],
+    "forwardPorts": [8000, 8001],
+    "onCreateCommand": "apt-get update && apt-get install -y git curl"
 }

@@ -1,0 +1,22 @@
+[
+  {
+    "model": "blog.Article",
+    "pk": 1,
+    "fields": {
+        "title": "Test Article 1", 
+        "content": "Test Article 1",
+        "publish_date": "2025-09-01",
+        "slug": "test-article-1"
+    }
+  },
+  {
+    "model": "blog.Article",
+    "pk": 2,
+    "fields": {
+        "title": "Test Article 2", 
+        "content": "Test Article 2",
+        "publish_date": "2025-09-01",
+        "slug": "test-article-2"
+    }
+  }
+]

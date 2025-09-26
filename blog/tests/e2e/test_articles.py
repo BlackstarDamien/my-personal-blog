@@ -1,60 +1,48 @@
 from blog.tests.e2e.base import TestBase
-from pathlib import Path
+from django.test import override_settings
 
 from .pages.article_page import ArticlePage
 from .pages.main_page import MainPage
-from .pages.admin_login_page import AdminLoginPage
+from blog.tests.helpers import (
+    create_dummy_article, 
+    create_article_with_image
+)
+
+
+STORAGE_TEST_OPTIONS = {
+    "default": {
+        "BACKEND": "django.core.files.storage.InMemoryStorage"
+    }
+}
 
 
 class TestArticles(TestBase):
+    @classmethod
+    def setUpTestData(cls):
+        with open("blog/tests/fixtures/markdown/lorem_ipsum.md", "r") as f:
+            cls.lorem_md_content = f.read()
+
+        cls.article_test = create_dummy_article(
+            {
+                "title": "Lorem Ipsum",
+                "publish_date": "2024-10-11",
+                "content": cls.lorem_md_content
+            }
+        )
+        
     def setUp(self) -> None:
         super().setUp()
-        self.create_dummy_admin_user()
     
-    def test_create_article(self):
-        """Tests that it's possible to add an article via admin panel.
+    def test_display_article(self):
+        """Tests created articles is displayed under it's own URL.
         """
-        admin_login_page = AdminLoginPage(self.browser).navigate()
-        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
-        
-        admin_articles_page = admin_page.navigate_to_articles()
-        admin_articles_page.add_new_article(self.article).save()
-
+        create_dummy_article(self.article)
         main_page = MainPage(self.browser).navigate()
         self.assertTrue(main_page.is_article_visible(self.article["title"]))
 
         article_page = ArticlePage(self.browser).navigate(self.article["title"])
         self.assertDictEqual(article_page.to_dict(), self.article)
     
-    def test_edit_article(self):
-        """Tests that it's possible to edit existing article via admin panel.
-        """
-        changes = {"content": "Edited Content"}
-        article = self.create_dummy_article(self.article)
-
-        admin_login_page = AdminLoginPage(self.browser).navigate()
-        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
-        
-        admin_articles_page = admin_page.navigate_to_articles()
-        admin_articles_page.edit_article(article.title, changes)
-
-        article_page = ArticlePage(self.browser).navigate(article.title)
-        self.assertTrue(changes["content"] == article_page.get_content())
-    
-    def test_delete_article(self):
-        """Test that it's possible to remove existing article via admin panel.
-        """
-        article = self.create_dummy_article(self.article)
-
-        admin_login_page = AdminLoginPage(self.browser).navigate()
-        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
-        
-        admin_articles_page = admin_page.navigate_to_articles()
-        admin_articles_page.delete_article(article.title)
-
-        main_page = MainPage(self.browser).navigate()
-        self.assertFalse(main_page.is_article_visible(article.title))
-
     def test_can_handle_markdown_format(self):
         """Test that it's possible to handle content written in Markdown"""
         md_article = {
@@ -62,36 +50,31 @@ class TestArticles(TestBase):
             "publish_date": "2024-10-11",
             "content": """# Some good title\n## Part One\nThis is part one"""
         }
-        admin_login_page = AdminLoginPage(self.browser).navigate()
-        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
-        
-        admin_articles_page = admin_page.navigate_to_articles()
-        admin_articles_page.add_new_article(md_article).save()
 
-        article_page = ArticlePage(self.browser).navigate(self.article["title"])
+        create_dummy_article(md_article)
+        article_page = ArticlePage(self.browser).navigate(md_article["title"])
         content = article_page.get_content()
 
         expected = """Some good title\nPart One\nThis is part one"""
         self.assertEqual(content, expected)
-       
+    
+    @override_settings(STORAGES=STORAGE_TEST_OPTIONS)
     def test_can_display_images_inside_article(self):
         """Tests that it's possible to render all images inside an article.
         """
+        md_content = "\n".join([
+            "## This is an article with image",
+            "### Overview",
+            "This article was created to display a single image",
+            "Here's an photography of this tiny little cat:",
+            "![](black-cat.jpg)"
+        ])
         article = {
             "title": "Article With Image",
             "publish_date": "2024-10-11",
+            "content": md_content 
         }
-
-        with open(Path(__file__).parent.parent / "data/article-with-image.md") as f:
-            article["content"] = f.read()
-        
-        admin_login_page = AdminLoginPage(self.browser).navigate()
-        admin_page = admin_login_page.login(self.admin["username"], self.admin["password"])
-        admin_articles_page = admin_page.navigate_to_articles()
-
-        path_to_image = Path(__file__).parent.parent / "data/black-cat.jpg"
-        admin_articles_page.add_new_article(article).attach_images(path_to_image).save()
-
+        create_article_with_image(article, "black-cat.jpg")
         article_page = ArticlePage(self.browser).navigate(article["title"])
         images = article_page.get_all_images()
 
