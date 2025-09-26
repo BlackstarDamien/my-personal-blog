@@ -14,7 +14,7 @@ jobs:
       env:
         TESTCONTAINERS_HOST_OVERRIDE: host.docker.internal
         TEST_HOST: host.docker.internal
-        TEST_PORT: "8001"
+        TEST_PORT: 8001
       ports:
         - 8000
         - 8001
