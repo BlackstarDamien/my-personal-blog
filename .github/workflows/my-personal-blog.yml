@@ -18,9 +18,17 @@ jobs:
       ports:
         - 8000
         - 8001
+      options: >-
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        --privileged
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.x"
 
     - name: Install Dependencies
       run: |
@@ -28,7 +36,6 @@ jobs:
 
     - name: Run migration
       run: |
-        ls -la
         python manage.py migrate
 
     - name: Collect static files
