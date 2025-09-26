@@ -30,24 +30,23 @@ jobs:
     - name: Install Dependencies
       run: |
         pip install -r requirements.txt
-        apt-get install make
 
     - name: Run migration
       run: |
-        make migrate
+        python manage.py migrate
 
     - name: Collect static files
       run: |
-        make generate-static
+        python manage.py collectstatic
 
     - name: Run e2e tests
       run: |
-        make e2e
+        python manage.py test blog.tests.e2e.test_main_page
 
     - name: Run integration tests
       run: |
-        make integration
+        python manage.py test blog.tests.integration
 
     - name: Run unit tests
       run: |
-        make unit
+        python manage.py test blog.tests.unit
