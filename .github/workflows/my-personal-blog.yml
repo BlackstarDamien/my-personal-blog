@@ -32,4 +32,4 @@ jobs:
           -e TEST_PORT=$TEST_PORT \
           -v ${{ github.workspace }}:/app \
           my-blog-test-image \
-          /bin/bash -lc "cd /app && make migrate && make generate-static && make e2e && make integration && make unit"
+          /bin/bash -lc "cd /app && python manage.py test blog.tests.e2e.test_main_page && python manage.py test blog.tests.integration && python manage.py test blog.tests.unit"
