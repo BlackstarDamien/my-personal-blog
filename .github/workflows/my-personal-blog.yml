@@ -33,11 +33,11 @@ jobs:
 
     - name: Run migration
       run: |
+        ls -la
         python manage.py migrate
 
     - name: Collect static files
       run: |
-        ls -la
         python manage.py collectstatic
 
     - name: Run e2e tests
