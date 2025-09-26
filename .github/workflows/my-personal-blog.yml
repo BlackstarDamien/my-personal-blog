@@ -12,8 +12,8 @@ jobs:
     container:
       image: python:3.11-slim-bullseye
       env:
-        TESTCONTAINERS_HOST_OVERRIDE: localhost
-        TEST_HOST: localhost
+        TESTCONTAINERS_HOST_OVERRIDE: 172.17.0.1
+        TEST_HOST: 172.17.0.1
         TEST_PORT: 8001
         DOCKER_HOST: unix:///var/run/docker.sock
       ports:
