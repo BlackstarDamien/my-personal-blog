@@ -37,10 +37,10 @@ class TestArticles(TestBase):
         """Tests created articles is displayed under it's own URL.
         """
         create_dummy_article(self.article)
-        main_page = MainPage(self.browser).navigate()
+        main_page = MainPage(self.page).navigate()
         self.assertTrue(main_page.is_article_visible(self.article["title"]))
 
-        article_page = ArticlePage(self.browser).navigate(self.article["title"])
+        article_page = ArticlePage(self.page).navigate(self.article["title"])
         self.assertDictEqual(article_page.to_dict(), self.article)
     
     def test_can_handle_markdown_format(self):
@@ -52,7 +52,7 @@ class TestArticles(TestBase):
         }
 
         create_dummy_article(md_article)
-        article_page = ArticlePage(self.browser).navigate(md_article["title"])
+        article_page = ArticlePage(self.page).navigate(md_article["title"])
         content = article_page.get_content()
 
         expected = """Some good title\nPart One\nThis is part one"""
@@ -75,7 +75,7 @@ class TestArticles(TestBase):
             "content": md_content 
         }
         create_article_with_image(article, "black-cat.jpg")
-        article_page = ArticlePage(self.browser).navigate(article["title"])
+        article_page = ArticlePage(self.page).navigate(article["title"])
         images = article_page.get_all_images()
 
         self.assertEqual(len(images), 1)

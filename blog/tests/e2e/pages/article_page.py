@@ -1,16 +1,11 @@
 from typing import Dict, List
 from django.template.defaultfilters import slugify
-from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webelement import WebElement
-
-from .base_page import BasePage
+from playwright.sync_api import Page, Locator
 
 
-class ArticlePage(BasePage):
-    PAGE_URI = "/articles/"
-    TITLE_LOCATOR = (By.CSS_SELECTOR, ".article-title")
-    DATE_LOCATOR = (By.CSS_SELECTOR, ".article-pub-date")
-    CONTENT_LOCATOR = (By.CSS_SELECTOR, ".article-content")
+class ArticlePage:
+    def __init__(self, page: Page):
+        self.page = page
 
     def get_title(self) -> str:
         """Returns article's title.
@@ -20,7 +15,7 @@ class ArticlePage(BasePage):
         str
             Article's title.
         """
-        return self.find(self.TITLE_LOCATOR)[0].text
+        return self.page.locator(".article-title").inner_text()
     
     def get_pub_date(self) -> str:
         """Returns date when article was published.
@@ -30,7 +25,7 @@ class ArticlePage(BasePage):
         str
             Article's published date.
         """
-        return self.find(self.DATE_LOCATOR)[0].text
+        return self.page.locator(".article-pub-date").inner_text()
     
     def get_content(self) -> str:
         """Returns content of an article.
@@ -40,9 +35,9 @@ class ArticlePage(BasePage):
         str
             Article's content.
         """
-        return self.find(self.CONTENT_LOCATOR)[0].text
+        return self.page.locator(".article-content").text_content().strip()
 
-    def get_all_images(self) -> List[WebElement]:
+    def get_all_images(self) -> List[Locator]:
         """Returns all images from an article.
 
         Returns
@@ -50,7 +45,7 @@ class ArticlePage(BasePage):
         List[WebElement]
             List of images
         """
-        return self.find((By.TAG_NAME, "img"))
+        return self.page.locator("img").all()
 
     def to_dict(self) -> Dict[str, str]:
         """Converts Article Page to dict object.
@@ -74,7 +69,8 @@ class ArticlePage(BasePage):
         title : str
             Article's title
         """
-        page_url = f"{self.base_url}{self.PAGE_URI}"
-        self.driver.get(page_url + slugify(title))
+        slug = slugify(title)
+        page_url = f"{self.page.url}/articles/{slug}"
+        self.page.goto(page_url)
         return self
     
