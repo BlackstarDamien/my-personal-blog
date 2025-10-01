@@ -1,12 +1,10 @@
 from typing import Dict, List
 from django.template.defaultfilters import slugify
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import Locator
+from .base_page import BasePage
 
 
-class ArticlePage:
-    def __init__(self, page: Page):
-        self.page = page
-
+class ArticlePage(BasePage):
     def get_title(self) -> str:
         """Returns article's title.
 
@@ -70,7 +68,6 @@ class ArticlePage:
             Article's title
         """
         slug = slugify(title)
-        page_url = f"{self.page.url}/articles/{slug}"
-        self.page.goto(page_url)
-        return self
+        endpoint = f"articles/{slug}"
+        return super().navigate(endpoint)
     

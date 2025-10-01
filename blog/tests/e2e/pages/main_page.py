@@ -1,10 +1,8 @@
 from typing import List
-from playwright.sync_api import Page
+from .base_page import BasePage
 
-class MainPage:
-    def __init__(self, page: Page):
-        self.page = page
-    
+
+class MainPage(BasePage):
     def fetch_articles(self) -> List[str]:
         """Fetch and return the list of articles.
 
@@ -34,9 +32,4 @@ class MainPage:
             if title == checked_title:
                 return True
         return False
-    
-    def navigate(self) -> "MainPage":
-        """Opens an Main Page page."""
-        self.page.goto(self.page.url)
-        return self
     

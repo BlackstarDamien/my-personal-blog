@@ -1,11 +1,8 @@
 from typing import Dict
-from playwright.sync_api import Page
+from .base_page import BasePage
 
 
-class AboutMePage:
-    def __init__(self, page: Page):
-        self.page = page
-    
+class AboutMePage(BasePage):    
     def get_title(self) -> str:
         """Returns title of About Me page.
 
@@ -41,7 +38,6 @@ class AboutMePage:
     
     def navigate(self) -> "AboutMePage":
         """Opens an About Me page."""
-        page_url = f"{self.page.url}/about-me"
-        self.page.goto(page_url)
-        return self
+        endpoint = "about-me"
+        return super().navigate(endpoint)
     
