@@ -1,29 +1,22 @@
 import os
 from datetime import datetime
 from django.test import LiveServerTestCase
-from selenium.webdriver import DesiredCapabilities
-from testcontainers.selenium import BrowserWebDriverContainer
+from playwright.sync_api import sync_playwright
 
 
 class TestBase(LiveServerTestCase):
     @classmethod
     def setUpClass(cls):
-        cls.port = int(os.environ.get("TEST_PORT", cls.port))
-        cls.live_server_uri = "http://web:{}".format(cls.port)
+        os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
+
+        cls.playwright = sync_playwright().start()
+        cls.browser = cls.playwright.chromium.launch()
+        
         super(TestBase, cls).setUpClass()
 
     def setUp(self) -> None:
-        self.browser_container = BrowserWebDriverContainer(
-            DesiredCapabilities.CHROME
-        )
-        self.browser_container.start()
-
-        self.browser = self.browser_container.get_driver()
-        self.browser.implicitly_wait(3)
-
-        server_host = os.environ.get("TEST_HOST", "host.docker.internal")
-        self.live_server_url = f'http://{server_host}:{self.port}/'
-        self.browser.get(self.live_server_url)
+        self.page = self.browser.new_page()
+        self.page.goto(self.live_server_url)
 
         self.article = {
             "title": "Test Article",
@@ -43,5 +36,11 @@ class TestBase(LiveServerTestCase):
         ]
 
     def tearDown(self) -> None:
-        self.browser.close()
-        self.browser_container.stop()
+        self.page.close()
+        super().tearDown()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        cls.browser.close()
+        cls.playwright.stop()
+        super().tearDownClass()
