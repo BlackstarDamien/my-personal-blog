@@ -11,7 +11,7 @@ class TestAboutMePage(TestBase):
         """Tests that About Me page is displayed properly.
         """
         create_dummy_about_me(self.about_me)
-        about_me_page = AboutMePage(self.browser).navigate()
+        about_me_page = AboutMePage(self.page).navigate()
 
         self.assertDictEqual(about_me_page.to_dict(), self.about_me)
     
