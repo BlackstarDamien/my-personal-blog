@@ -1,14 +1,8 @@
 from typing import Dict
-from selenium.webdriver.common.by import By
-
 from .base_page import BasePage
 
 
-class AboutMePage(BasePage):
-    PAGE_URI = "/about-me"
-    TITLE_LOCATOR = (By.CSS_SELECTOR, ".about_me-title")
-    CONTENT_LOCATOR = (By.CSS_SELECTOR, ".about_me-content")
-
+class AboutMePage(BasePage):    
     def get_title(self) -> str:
         """Returns title of About Me page.
 
@@ -17,7 +11,7 @@ class AboutMePage(BasePage):
         str
             Title of About Me page.
         """
-        return self.find(self.TITLE_LOCATOR)[0].text
+        return self.page.locator(".about_me-title").inner_text()
         
     def get_content(self) -> str:
         """Returns content of an article.
@@ -27,7 +21,7 @@ class AboutMePage(BasePage):
         str
             Content of About Me page.
         """
-        return self.find(self.CONTENT_LOCATOR)[0].text
+        return self.page.locator(".about_me-content").inner_text()
 
     def to_dict(self) -> Dict[str, str]:
         """Converts Article Page to dict object.
@@ -44,7 +38,6 @@ class AboutMePage(BasePage):
     
     def navigate(self) -> "AboutMePage":
         """Opens an About Me page."""
-        page_url = f"{self.base_url}{self.PAGE_URI}"
-        self.driver.get(page_url)
-        return self
+        endpoint = "about-me"
+        return super().navigate(endpoint)
     

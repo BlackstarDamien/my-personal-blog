@@ -1,11 +1,8 @@
 from typing import List
-from selenium.webdriver.common.by import By
-
 from .base_page import BasePage
 
+
 class MainPage(BasePage):
-    ARTICLES_LOCATOR = (By.CSS_SELECTOR, ".article-link")
-    
     def fetch_articles(self) -> List[str]:
         """Fetch and return the list of articles.
 
@@ -14,7 +11,8 @@ class MainPage(BasePage):
         List[str]
             List of articles from main page.
         """
-        return [loc.text for loc in self.find(self.ARTICLES_LOCATOR)]
+        
+        return [loc.inner_text() for loc in self.page.locator(".article-link").all()]
 
     def is_article_visible(self, checked_title: str) -> bool:
         """Checks if given article is visible on main page.
@@ -34,9 +32,4 @@ class MainPage(BasePage):
             if title == checked_title:
                 return True
         return False
-    
-    def navigate(self) -> "MainPage":
-        """Opens an Main Page page."""
-        self.driver.get(self.base_url)
-        return self
     
