@@ -1,10 +1,9 @@
 from typing import List
-from selenium.webdriver.common.by import By
+from playwright.sync_api import Page
 
-from .base_page import BasePage
-
-class MainPage(BasePage):
-    ARTICLES_LOCATOR = (By.CSS_SELECTOR, ".article-link")
+class MainPage:
+    def __init__(self, page: Page):
+        self.page = page
     
     def fetch_articles(self) -> List[str]:
         """Fetch and return the list of articles.
@@ -14,7 +13,8 @@ class MainPage(BasePage):
         List[str]
             List of articles from main page.
         """
-        return [loc.text for loc in self.find(self.ARTICLES_LOCATOR)]
+        
+        return [loc.inner_text() for loc in self.page.locator(".article-link").all()]
 
     def is_article_visible(self, checked_title: str) -> bool:
         """Checks if given article is visible on main page.
@@ -37,6 +37,6 @@ class MainPage(BasePage):
     
     def navigate(self) -> "MainPage":
         """Opens an Main Page page."""
-        self.driver.get(self.base_url)
+        self.page.goto(self.page.url)
         return self
     
