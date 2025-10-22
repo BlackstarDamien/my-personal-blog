@@ -1,0 +1,51 @@
+# Git
+.git
+.gitignore
+.github
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+dist/
+build/
+*.egg
+
+# Django
+db.sqlite3
+*.log
+local_settings.py
+
+# Testing
+.pytest_cache
+.coverage
+htmlcov/
+.tox/
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Docs
+README.md
+*.md
+
+# CI/CD
+.github/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Media files (if not needed in image)
+media/
+
+# OS
+.DS_Store
+Thumbs.db
