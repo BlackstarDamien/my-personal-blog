@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  database:
+    image: postgres:15-alpine
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=blog_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=blog_db
+    networks:
+      - blog_network
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blog_user -d blog_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ${BUILD_TARGET}
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app
+      - python_venv:/app/venv
+    depends_on:
+      database:
+        condition: service_healthy
+        restart: true
+    networks:
+      - blog_network
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_DB=blog_db
+      - POSTGRES_USER=blog_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=database
+      - POSTGRES_PORT=5432
+      - DEBUG=${DEBUG}
+      - SECRET_KEY=${SECRET_KEY}
+
+volumes:
+  python_venv:
+  postgres_data:
+
+networks:
+  blog_network:
+    driver: bridge
