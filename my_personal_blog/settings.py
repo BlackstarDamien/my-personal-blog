@@ -19,7 +19,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 SECRET_KEY = os.getenv("SECRET_KEY")
-DEBUG = int(os.getenv("DEBUG", "1")) == 1
+if not SECRET_KEY:
+    raise RuntimeError(
+        "The SECRET_KEY environment variable is not set. Please set it to a non-empty value."
+    )
+
+DEBUG = bool(os.getenv("DEBUG", True))
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
@@ -70,12 +75,12 @@ WSGI_APPLICATION = 'my_personal_blog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB'),
-        'USER': os.getenv('POSTGRES_USER'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
-        'PORT': os.getenv('POSTGRES_PORT', 5432),
+        'ENGINE': "django.db.backends.postgresql",
+        'NAME': os.getenv("POSTGRES_DB"),
+        'USER': os.getenv("POSTGRES_USER"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
+        'HOST': os.getenv("POSTGRES_HOST", "localhost"),
+        'PORT': os.getenv("POSTGRES_PORT", "5432"),
     }
 }
 
