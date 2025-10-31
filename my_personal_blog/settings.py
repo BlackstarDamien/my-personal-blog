@@ -24,7 +24,7 @@ if not SECRET_KEY:
         "The SECRET_KEY environment variable is not set. Please set it to a non-empty value."
     )
 
-DEBUG = bool(os.getenv("DEBUG", True))
+DEBUG = bool(os.getenv("DEBUG", False))
 ALLOWED_HOSTS = ["*"]
 
 # Application definition
