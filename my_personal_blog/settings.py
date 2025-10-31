@@ -25,7 +25,7 @@ if not SECRET_KEY:
     )
 
 DEBUG = bool(os.getenv("DEBUG", False))
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 # Application definition
 
