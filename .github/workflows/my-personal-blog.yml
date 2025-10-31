@@ -17,7 +17,6 @@ jobs:
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       SECRET_KEY: workflow_secret_key
-      DEBUG: True
 
     services:
       postgres:
