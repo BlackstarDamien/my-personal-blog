@@ -22,7 +22,7 @@ if not SECRET_KEY:
         "The SECRET_KEY environment variable is not set. Please set it to a non-empty value."
     )
 
-DEBUG = bool(os.getenv("DEBUG", False))
+DEBUG = int(os.getenv("DEBUG", "0")) == 1
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 # Security
