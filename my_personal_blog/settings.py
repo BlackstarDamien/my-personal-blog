@@ -26,7 +26,7 @@ DEBUG = bool(os.getenv("DEBUG", False))
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS").split(",")
 
 # Security
-CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
 SECURE_SSL_REDIRECT = not DEBUG
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
