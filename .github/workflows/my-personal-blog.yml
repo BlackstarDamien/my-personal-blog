@@ -19,7 +19,6 @@ jobs:
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       SECRET_KEY: workflow_secret_key
-      CSRF_TRUSTED_ORIGINS: "http://localhost:8000,http://127.0.0.1:8000"
 
     services:
       postgres:
