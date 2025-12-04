@@ -33,3 +33,6 @@ class MainPage(BasePage):
                 return True
         return False
     
+    def get_title(self) -> str:
+        return self.page.title()
+    
