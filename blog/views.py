@@ -74,3 +74,17 @@ def page_not_found_view(request: HttpRequest, exception) -> HttpResponse:
     """
     return render(request, '404.html', status=404)
 
+def server_error_view(request: HttpRequest) -> HttpResponse:
+    """Renders custom 500 page.
+
+    Parameters
+    ----------
+    request : HttpRequest
+        HTTP request that resulted in 500.
+
+    Returns
+    -------
+    HttpResponse
+        Rendered 500 page.
+    """
+    return render(request, '500.html', status=500)
