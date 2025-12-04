@@ -58,3 +58,20 @@ body {
     font-size: 2rem;
     color:black;
 }
+
+.page-not-found-header {
+    text-align: center;
+    padding: 2rem;
+}
+
+.page-not-found-title {
+    font-size: 3rem;
+    color: #333;
+}
+
+.page-not-found-msg {
+    text-align: center;
+    font-size: 1.25rem;
+    color: #666;
+    padding: 1rem;
+}
