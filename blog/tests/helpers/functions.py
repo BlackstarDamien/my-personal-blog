@@ -2,6 +2,8 @@ from io import BytesIO
 from PIL import Image as PILImage
 from typing import List
 from blog.models import AboutMe, Article, Image
+
+from django.http import HttpRequest, HttpResponse
 from django.core.files.images import ImageFile
 
 
@@ -91,3 +93,6 @@ def bind_image_with_article(image: Image, article: Article) -> Image:
     image.article = article
     image.save()
     return image
+
+def trigger_500_error(request: HttpRequest) -> HttpResponse:
+    raise Exception("Intentional server error for testing purposes")

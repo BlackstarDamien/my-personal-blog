@@ -1,18 +1,20 @@
-from django.http import HttpRequest, HttpResponse
 from django.test import override_settings
 from django.urls import clear_url_caches, path
 from blog.tests.e2e.base import TestBase
+from blog.tests.helpers.functions import trigger_500_error
 from blog.urls import urlpatterns
-from .pages.server_error_page import ServerErrorPage
+from blog.tests.e2e.pages.server_error_page import ServerErrorPage
 
-def trigger_500_error(request: HttpRequest) -> HttpResponse:
-    raise Exception("Intentional server error for testing purposes")
 
 class Test500Page(TestBase):
     def setUp(self) -> None:
         super().setUp()
         urlpatterns.append(
-            path('trigger-500-error', trigger_500_error, name='trigger_500_error')
+            path(
+                'trigger-500-error', 
+                trigger_500_error, 
+                name='trigger_500_error'
+            )
         )
         clear_url_caches()
 

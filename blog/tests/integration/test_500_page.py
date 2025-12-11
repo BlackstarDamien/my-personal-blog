@@ -1,20 +1,22 @@
-from django.http import HttpRequest, HttpResponse
 from django.test import TestCase, Client
 from django.urls import path, clear_url_caches
 from blog.views import server_error_view
 from blog.urls import urlpatterns
+from blog.tests.helpers.functions import trigger_500_error
 
-
-def trigger_500_error(request: HttpRequest) -> HttpResponse:
-    raise Exception("Intentional server error for testing purposes")
 
 class Test500Page(TestCase):
     """Integration tests for 500 error page."""
 
     def setUp(self):
         self.client = Client(raise_request_exception=False)
+
         urlpatterns.append(
-            path('trigger-500-error', trigger_500_error, name='trigger_500_error')
+            path(
+                'trigger-500-error', 
+                trigger_500_error, 
+                name='trigger_500_error'
+            )
         )
         clear_url_caches()
 
