@@ -1,4 +1,5 @@
 from django.test import TestCase, Client
+from django.urls import reverse
 
 
 class Test404Page(TestCase):
@@ -25,7 +26,11 @@ class Test404Page(TestCase):
     def test_404_page_contains_home_link(self):
         """Test that 404 page contains a link back to home."""
         response = self.client.get('/non-existent-page-that-does-not-exist/')
-        self.assertContains(response, 'href="/"', status_code=404)
+        home_url = reverse('index')
+        # Check that the response contains a link to the home page
+        self.assertContains(response, f'href="{home_url}"', status_code=404)
+        # Also verify the navigation bar is present with the blog title link
+        self.assertContains(response, 'navbar', status_code=404)
 
     def test_404_for_invalid_blog_post_slug(self):
         """Test that invalid blog post slug returns 404."""
