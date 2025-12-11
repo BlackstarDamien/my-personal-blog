@@ -29,7 +29,7 @@ class Test404Page(TestCase):
 
     def test_404_for_invalid_blog_post_slug(self):
         """Test that invalid blog post slug returns 404."""
-        response = self.client.get('/article/this-post-does-not-exist/')
+        response = self.client.get('/articles/this-post-does-not-exist/')
         self.assertEqual(response.status_code, 404)
 
     def test_404_page_content_type(self):

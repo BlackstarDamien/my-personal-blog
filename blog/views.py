@@ -57,14 +57,14 @@ def about_me_page(request: HttpRequest) -> HttpResponse:
     context = {"about_me": about_me}
     return render(request, 'about_me.html', context)
 
-def page_not_found_view(request: HttpRequest, exception) -> HttpResponse:
+def page_not_found_view(request: HttpRequest, exception: Exception) -> HttpResponse:
     """Renders custom 404 page.
 
     Parameters
     ----------
     request : HttpRequest
         HTTP request that resulted in 404.
-    exception
+    exception : Exception
         Exception that triggered the 404.
 
     Returns
